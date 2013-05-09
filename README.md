@@ -1,0 +1,34 @@
+# cinnamon.js
+
+A JavaScript client for the Cinnamon CMS
+
+# Introduction
+
+This is an experimental client for the [Cinnamon CMS](http://cinnamon-cms.com).
+
+I want to write some advanced webclient features and also extend my JavaScript knowledge.
+
+The goal is to have a client library
+
+* which can be used for fat browser based Cinnamon applications, for example editing complex Cinnamon object graphs in the browser (DITA, S1000D, XML);
+* which exposes core Cinnamon object types to improve the existing webclient, for example a dynamic search builder.
+
+# Project status
+
+The project is in pre-alpha status. Currently, it can connect to a Cinnamon repository and fetch several object lists (Acls, FolderTypes, ObjectTypes) which are essential to building more complex classes. 
+
+# Technolgoy Stack
+
+* [jQuery 2.0.0](http://jquery.com)
+* [QUnit 1.11](http://qunitjs.com)
+
+# License
+
+I have not yet decided which open source license model to use. If you want to use this software now, please contact me.
+
+# Author and Contact
+
+* Ingo Wiarda
+* Email: ingo_wiarda@dewarim.de
+* Website: https://github.com/dewarim/cinnamon.js
+
