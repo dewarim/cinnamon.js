@@ -10,8 +10,9 @@ I want to write some advanced webclient features and also extend my JavaScript k
 
 The goal is to have a client library
 
-* which can be used for fat browser based Cinnamon applications, for example editing complex Cinnamon object graphs in the browser (DITA, S1000D, XML);
-* which exposes core Cinnamon object types to improve the existing webclient, for example a dynamic search builder.
+* which can be used for fat Cinnamon applications, for example editing complex Cinnamon object graphs in the browser (DITA, S1000D, XML);
+* which exposes core Cinnamon object types to improve the existing webclient, for example a dynamic search builder;
+* which contains a collection of tests for the XML server API.
 
 # Project status
 
