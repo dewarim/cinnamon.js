@@ -3,8 +3,7 @@
  * Date: 05.05.13
  * Time: 19:18
  */
-
-
+ 
 function runTests(cinnamon) {
     cinnamon.connect();
     test("ensure valid ticket", function () {
@@ -22,6 +21,10 @@ function runTests(cinnamon) {
     test('fetch list of Acls', function(){
         var aclList = cinnamon.fetchObjectList('acl');
         ok(findObject(aclList, 'sysName', '_default_acl') != undefined);
+        var id = aclList[0]['id'];
+        console.log("aclId: "+id);
+        console.log("registry: "+cinnamon.registry.get('acl',id ));
+        equal(cinnamon.registry.get('acl',id ), aclList[0]);
     });
     
     test('fetch list of ObjectTypes', function(){

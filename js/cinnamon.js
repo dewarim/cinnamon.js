@@ -11,6 +11,7 @@ function Cinnamon(config) {
     this.password = config.get('password');
     this.repository = config.get('repository');
     this.url = config.get('url');
+    this.registry = new CmnRegistry();
 
 }
 
@@ -115,5 +116,6 @@ Cinnamon.prototype.fetchObjectList = function(name) {
             500: self.connectionError
         }
     });
+    this.registry.setList(name, items);
     return items;
 };
