@@ -35,17 +35,28 @@ function runTests(cinnamon) {
     });   
     
     test('fetch list of FolderTypes', function(){
-        var otList = cinnamon.fetchObjectList('folderType');
-        ok(findObject(otList, 'sysName', '_default_folder_type') != undefined);
-        ok((/<meta\s*\/>/).test(otList[0].config));
-        ok($(otList[0].configXml).find('meta').length > 0);
+        var ftList = cinnamon.fetchObjectList('folderType');
+        ok(findObject(ftList, 'sysName', '_default_folder_type') != undefined);
+        ok((/<meta\s*\/>/).test(ftList[0].config));
+        ok($(ftList[0].configXml).find('meta').length > 0);
     }); 
     
     test('fetch list of MetasetTypes', function(){
-        var otList = cinnamon.fetchObjectList('metasetType');
-        ok(findObject(otList, 'sysName', 'test') != undefined);
-        ok((/<metaset\s*\/>/).test(otList[0].config));
-        ok($(otList[0].configXml).find('metaset').length > 0);
+        var mtList = cinnamon.fetchObjectList('metasetType');
+        ok(findObject(mtList, 'sysName', 'test') != undefined);
+        ok((/<metaset\s*\/>/).test(mtList[0].config));
+        ok($(mtList[0].configXml).find('metaset').length > 0);
+    }); 
+    
+    test('fetch list of Formats', function(){
+        var formats = cinnamon.fetchObjectList('format');
+        var registry = cinnamon.registry;
+        var jpegFormat = findObject(formats, 'sysName', 'format.jpeg');
+        ok(jpegFormat != undefined);        
+        equal(jpegFormat.defaultObjectType, registry.getByName('objectType', 'image'));
+        equal(jpegFormat.defaultObjectType.name, 'image');
+        var xmlFormat = findObject(formats, 'sysName', 'format.xml');
+        equal(xmlFormat.defaultObjectType, null);
     });
 }
 

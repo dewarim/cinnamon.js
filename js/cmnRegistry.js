@@ -55,17 +55,19 @@ function CmnRegistry(){
         acl:{hasName:true}, 
         folderType:{hasName:true},
         metasetType:{hasName:true}, 
-        objectType:{hasName:true}
+        objectType:{hasName:true},
+        format:{hasName:true}
     };
     this.registries = {};
-    this.nameRegistry = {};
+    this.nameRegistries = {};
 }
 
 CmnRegistry.prototype.setList = function(name, objects){
     console.log("add dictionary for "+name);
     this.registries[name] = new Dictionary(objects, 'id');
-    if(this.registryTypes[name].hasName){
-        this.nameRegistry[name] = new Dictionary(objects, 'name');
+    if(this.registryTypes[name] != undefined && this.registryTypes[name].hasName){
+        console.log("add nameRegistry for "+name);
+        this.nameRegistries[name] = new Dictionary(objects, 'sysName');
     }
 };
 
@@ -75,6 +77,13 @@ CmnRegistry.prototype.get = function(className, id){
 };
 
 CmnRegistry.prototype.getByName = function(className, name){
-    
+    console.log("get by name: class="+className+" name="+name);
+    if(this.nameRegistries[className]){
+        return this.nameRegistries[className].get(name);
+    }
+    else{
+        console.log("entry not found");
+        return null;
+    }
 };
 

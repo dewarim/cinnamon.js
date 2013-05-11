@@ -92,13 +92,18 @@ function objectDict() {
             controllerAction: 'metasetType/listXml',
             base: 'metasetTypes',
             constructor: FolderType
-        }        
+        },
+        format: {
+            controllerAction: 'format/listXml',
+            base: 'formats',
+            constructor: Format
+        }
     }
 }
 
 Cinnamon.prototype.fetchObjectList = function(name) {
     var config = objectDict()[name];
-    var self = this;
+    var self = this;    
     var items = [];
     $.ajax(this.url + config.controllerAction, {
         async: false,
@@ -106,8 +111,9 @@ Cinnamon.prototype.fetchObjectList = function(name) {
         headers: {ticket: self.ticket},
         success: function (data) {
             var myObjects = items;
+            var registry = self.registry;
             $(data).find(config.base + ' > ' + name).each(function(index, element){
-                var object = new config['constructor'](element);
+                var object = new config['constructor'](element, registry);
                 myObjects.push(object);
             });
         },
