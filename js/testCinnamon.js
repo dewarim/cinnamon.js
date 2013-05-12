@@ -46,8 +46,13 @@ function runTests(cinnamon) {
         ok(findObject(mtList, 'sysName', 'test') != undefined);
         ok((/<metaset\s*\/>/).test(mtList[0].config));
         ok($(mtList[0].configXml).find('metaset').length > 0);
-    }); 
-    
+    });
+
+    test('fetch list of Permissions', function(){
+        var permList = cinnamon.fetchObjectList('permission');
+        ok(findObject(permList, 'sysName', '_write_object_content') != undefined);
+    });
+
     test('fetch list of Formats', function(){
         var formats = cinnamon.fetchObjectList('format');
         var registry = cinnamon.registry;

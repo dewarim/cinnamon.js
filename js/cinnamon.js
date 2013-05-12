@@ -97,6 +97,11 @@ function objectDict() {
             controllerAction: 'format/listXml',
             base: 'formats',
             constructor: Format
+        },    
+        permission: {
+            controllerAction: 'permission/listXml',
+            base: 'permissions',
+            constructor: Permission
         }
     }
 }
