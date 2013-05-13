@@ -102,6 +102,18 @@ function objectDict() {
             controllerAction: 'permission/listXml',
             base: 'permissions',
             constructor: Permission
+        },
+        lifeCycleState:{
+            controllerAction: 'lifeCycle/listLifeCyclesXml',
+            base: 'lifecycles > lifecycle > states',
+            elementName:'lifecycleState',
+            constructor: LifeCycleState
+        },
+        lifeCycle:{
+            controllerAction: 'lifeCycle/listLifeCyclesXml',
+            base: 'lifecycles',
+            elementName:'lifecycle',
+            constructor: LifeCycle
         }
     }
 }
@@ -117,8 +129,12 @@ Cinnamon.prototype.fetchObjectList = function(name) {
         success: function (data) {
             var myObjects = items;
             var registry = self.registry;
-            $(data).find(config.base + ' > ' + name).each(function(index, element){
+            var elementName = config.elementName != undefined ? config.elementName : name;
+            var path = config.base + ' > ' + elementName;
+            console.log("path = "+path);
+            $(data).find(path).each(function(index, element){                
                 var object = new config['constructor'](element, registry);
+//                console.log("new object: "+object.name);
                 myObjects.push(object);
             });
         },

@@ -13,6 +13,16 @@ function toMap(objectList, keyName){
     return map;
 }
 
+function mapToValueList(map){
+    var list = [];
+    for(var field in map){
+        if(map.hasOwnProperty(field)){
+            list.push(map[field])
+        }
+    }
+    return list;
+}
+
 /**
  * Constructor for a Dictionary of [propertyValue::Object].
  * For example, given a keyName of id, and a list of FolderType objects,
@@ -56,14 +66,16 @@ function CmnRegistry(){
         folderType:{hasName:true},
         metasetType:{hasName:true}, 
         objectType:{hasName:true},
-        format:{hasName:true}
+        format:{hasName:true},
+        lifeCycle:{hasName:true},
+        lifeCycleState:{hasName:true}
     };
     this.registries = {};
     this.nameRegistries = {};
 }
 
 CmnRegistry.prototype.setList = function(name, objects){
-    console.log("add dictionary for "+name);
+    console.log("add dictionary for "+name+" with "+objects.length+" items");
     this.registries[name] = new Dictionary(objects, 'id');
     if(this.registryTypes[name] != undefined && this.registryTypes[name].hasName){
         console.log("add nameRegistry for "+name);
@@ -85,5 +97,21 @@ CmnRegistry.prototype.getByName = function(className, name){
         console.log("entry not found");
         return null;
     }
+};
+
+CmnRegistry.prototype.list = function(className){
+    return mapToValueList(this.registries[className].values);
+};
+
+CmnRegistry.prototype.listBy = function(className, property, propertyTest){
+    var items = this.list(className);
+    var itemsFound = [];
+    console.log("found "+items.length+" entries in registry "+className);
+    for(var x = 0; x < items.length; x++){
+        if(propertyTest(items[x])){
+            itemsFound.push(items[x]);
+        }
+    }
+    return itemsFound;
 };
 

@@ -6,6 +6,7 @@
  
 function runTests(cinnamon) {
     cinnamon.connect();
+    QUnit.config.reorder = false;
     test("ensure valid ticket", function () {
         var ticket = cinnamon.ticket;
         equal(ticket.length, 41);
@@ -63,6 +64,24 @@ function runTests(cinnamon) {
         var xmlFormat = findObject(formats, 'sysName', 'format.xml');
         equal(xmlFormat.defaultObjectType, null);
     });
+
+    test('fetch list of LifeCycleStates', function(){
+        var lcsList = cinnamon.fetchObjectList('lifeCycleState');
+        equal(lcsList.length, 4);
+        ok(cinnamon.registry.getByName('lifeCycleState', 'newRenderTask'));
+        equal(cinnamon.registry.list('lifeCycleState').length,4);
+        ok(findObject(lcsList, 'sysName', 'newRenderTask'));
+    });
+
+    test('fetch list of LifeCycles', function(){
+        var lcList = cinnamon.fetchObjectList('lifeCycle');
+        equal(lcList.length, 1);
+        console.log("*** "+lcList[0].sysName);
+        var renderLc = findObject(lcList, 'sysName', '_RenderServerLC'); 
+        ok(renderLc);
+        equal(renderLc.getStates().length, 4);               
+    });
+
 }
 
 function findObject(list, field, value){
