@@ -103,6 +103,17 @@ function objectDict() {
             base: 'permissions',
             constructor: Permission
         },
+        language: {
+            controllerAction: 'language/listXml',
+            base: 'languages',
+            constructor: Language
+        },
+        uiLanguage: {
+            controllerAction: 'uiLanguage/listXml',
+            base: 'languages',
+            elementName:'language',
+            constructor: UiLanguage
+        },
         lifeCycleState:{
             controllerAction: 'lifeCycle/listLifeCyclesXml',
             base: 'lifecycles > lifecycle > states',

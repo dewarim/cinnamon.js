@@ -68,7 +68,9 @@ function CmnRegistry(){
         objectType:{hasName:true},
         format:{hasName:true},
         lifeCycle:{hasName:true},
-        lifeCycleState:{hasName:true}
+        lifeCycleState:{hasName:true},
+        language:{hasName:true},
+        uiLanguage:{hasName:true}
     };
     this.registries = {};
     this.nameRegistries = {};

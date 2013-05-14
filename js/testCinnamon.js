@@ -53,7 +53,20 @@ function runTests(cinnamon) {
         var permList = cinnamon.fetchObjectList('permission');
         ok(findObject(permList, 'sysName', '_write_object_content') != undefined);
     });
-
+    
+    test('fetch list of Languages', function(){
+        var langList = cinnamon.fetchObjectList('language');
+        ok(findObject(langList, 'sysName', 'und') != undefined);
+        ok(findObject(langList, 'sysName', 'zxx') != undefined);
+        ok(findObject(langList, 'sysName', 'mul') != undefined);
+    });
+    
+    test('fetch list of UiLanguages', function(){
+        var langList = cinnamon.fetchObjectList('uiLanguage');
+        console.log("langList: "+langList.toSource());
+        ok(langList.length >= 3);
+    });
+    
     test('fetch list of Formats', function(){
         var formats = cinnamon.fetchObjectList('format');
         var registry = cinnamon.registry;
