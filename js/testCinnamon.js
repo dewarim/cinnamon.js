@@ -63,7 +63,6 @@ function runTests(cinnamon) {
     
     test('fetch list of UiLanguages', function(){
         var langList = cinnamon.fetchObjectList('uiLanguage');
-        console.log("langList: "+langList.toSource());
         ok(langList.length >= 3);
     });
     
@@ -95,6 +94,15 @@ function runTests(cinnamon) {
         equal(renderLc.getStates().length, 4);               
     });
 
+    test('fetch list of UserAccounts', function(){
+        var userList = cinnamon.fetchObjectList('userAccount');
+        ok(userList.length > 0);
+        var admin = findObject(userList, 'name', 'admin');
+        ok(admin);
+        var undeterminedLanguage = cinnamon.registry.getByName('uiLanguage', 'und');
+        ok(undeterminedLanguage);
+        equal(admin.language, undeterminedLanguage);        
+    });
 }
 
 function findObject(list, field, value){

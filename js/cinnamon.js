@@ -125,6 +125,12 @@ function objectDict() {
             base: 'lifecycles',
             elementName:'lifecycle',
             constructor: LifeCycle
+        },
+        userAccount:{
+            controllerAction: 'userAccount/listXml',
+            base: 'users',
+            elementName:'user',
+            constructor: UserAccount
         }
     }
 }

@@ -70,7 +70,8 @@ function CmnRegistry(){
         lifeCycle:{hasName:true},
         lifeCycleState:{hasName:true},
         language:{hasName:true},
-        uiLanguage:{hasName:true}
+        uiLanguage:{hasName:true},
+        userAccount:{hasName:true}
     };
     this.registries = {};
     this.nameRegistries = {};
