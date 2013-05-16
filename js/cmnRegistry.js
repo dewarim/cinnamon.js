@@ -62,7 +62,8 @@ function forEachIn(object, action){
 
 function CmnRegistry(){
     this.registryTypes = {
-        acl:{hasName:true}, 
+        acl:{hasName:true},
+        folder:{hasName:true, field:'name'},
         folderType:{hasName:true},
         metasetType:{hasName:true}, 
         objectType:{hasName:true},
@@ -80,10 +81,19 @@ function CmnRegistry(){
 CmnRegistry.prototype.setList = function(name, objects){
     console.log("add dictionary for "+name+" with "+objects.length+" items");
     this.registries[name] = new Dictionary(objects, 'id');
-    if(this.registryTypes[name] != undefined && this.registryTypes[name].hasName){
+    var rType = this.registryTypes[name]; 
+    if(rType != undefined && rType.hasName){
         console.log("add nameRegistry for "+name);
-        this.nameRegistries[name] = new Dictionary(objects, 'sysName');
+        var nameField = 'sysName';
+        if(rType.hasOwnProperty('field')){
+            nameField = rType.field;
+        }
+        this.nameRegistries[name] = new Dictionary(objects, nameField);
     }
+};
+
+CmnRegistry.prototype.add = function(className, object){
+    this.setList(className, [object]);
 };
 
 CmnRegistry.prototype.get = function(className, id){
