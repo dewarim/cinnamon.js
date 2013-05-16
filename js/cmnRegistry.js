@@ -4,19 +4,19 @@
  * Time: 21:45
  */
 
-function toMap(objectList, keyName){
+function toMap(objectList, keyName) {
     var map = {};
-    for(var x = 0;x < objectList.length; x++){
+    for (var x = 0; x < objectList.length; x++) {
 //        console.log("map: "+objectList[x][keyName]+" = "+objectList[x]);
-        map[objectList[x][keyName]] = objectList[x];        
+        map[objectList[x][keyName]] = objectList[x];
     }
     return map;
 }
 
-function mapToValueList(map){
+function mapToValueList(map) {
     var list = [];
-    for(var field in map){
-        if(map.hasOwnProperty(field)){
+    for (var field in map) {
+        if (map.hasOwnProperty(field)) {
             list.push(map[field])
         }
     }
@@ -26,102 +26,125 @@ function mapToValueList(map){
 /**
  * Constructor for a Dictionary of [propertyValue::Object].
  * For example, given a keyName of id, and a list of FolderType objects,
- * create a map of [id,   
+ * create a map of [id,
  * @param valueList list of Objects, for example: ObjectType
  * @param keyName
  * @constructor
  */
-function Dictionary(valueList, keyName){
+function Dictionary(valueList, keyName) {
     this.keyName = keyName;
     this.values = toMap(valueList || [], keyName);
 }
 
-Dictionary.prototype.add = function(name,value){
+Dictionary.prototype.add = function (name, value) {
     this.values[name] = value;
 };
 
-Dictionary.prototype.get = function(name){
+Dictionary.prototype.get = function (name) {
     return this.values[name];
 };
 
-Dictionary.prototype.contains = function(name){
-    return Object.prototype.propertyIsEnumerable.call(this.values, name);    
+Dictionary.prototype.contains = function (name) {
+    return Object.prototype.propertyIsEnumerable.call(this.values, name);
 };
 
-Dictionary.prototype.each = function(action){
+Dictionary.prototype.each = function (action) {
     forEachIn(this.values, action);
 };
 
-function forEachIn(object, action){
-    for(var property in object){
-        if(object.hasOwnProperty(property)){
+function forEachIn(object, action) {
+    for (var property in object) {
+        if (object.hasOwnProperty(property)) {
             action(property, object[property]);
         }
     }
 }
 
-function CmnRegistry(){
+function CmnRegistry() {
     this.registryTypes = {
-        acl:{hasName:true},
-        folder:{hasName:true, field:'name'},
-        folderType:{hasName:true},
-        metasetType:{hasName:true}, 
-        objectType:{hasName:true},
-        format:{hasName:true},
-        lifeCycle:{hasName:true},
-        lifeCycleState:{hasName:true},
-        language:{hasName:true},
-        uiLanguage:{hasName:true},
-        userAccount:{hasName:true}
+        acl: {hasName: true},
+        folder: {hasName: true, field: 'name'},
+        folderType: {hasName: true},
+        metasetType: {hasName: true},
+        objectType: {hasName: true},
+        format: {hasName: true},
+        lifeCycle: {hasName: true},
+        lifeCycleState: {hasName: true},
+        language: {hasName: true},
+        uiLanguage: {hasName: true},
+        userAccount: {hasName: true}
     };
     this.registries = {};
     this.nameRegistries = {};
 }
 
-CmnRegistry.prototype.setList = function(name, objects){
-    console.log("add dictionary for "+name+" with "+objects.length+" items");
+CmnRegistry.prototype.setList = function (name, objects) {
+    console.log("add dictionary for " + name + " with " + objects.length + " items");
     this.registries[name] = new Dictionary(objects, 'id');
-    var rType = this.registryTypes[name]; 
-    if(rType != undefined && rType.hasName){
-        console.log("add nameRegistry for "+name);
+    addToNameRegistry(this, name, objects);
+};
+
+function addToNameRegistry(registry, name, objects) {
+    var rType = registry.registryTypes[name];
+    if (rType != undefined && rType.hasName) {
+        console.log("add nameRegistry for " + name);
         var nameField = 'sysName';
-        if(rType.hasOwnProperty('field')){
+        if (rType.hasOwnProperty('field')) {
             nameField = rType.field;
         }
-        this.nameRegistries[name] = new Dictionary(objects, nameField);
+        var nameReg = registry.nameRegistries[name];
+        if (nameReg == undefined) {
+            registry.nameRegistries[name] = new Dictionary(objects, nameField);
+        }
+        else {
+            for (var x = 0; x < objects; x++) {
+                nameReg.add(objects[x][nameField], objects[x]);
+            }
+        }
+    }
+}
+
+CmnRegistry.prototype.add = function (className, object) {
+    var classRegistry = this.registries[className];
+    if (classRegistry == undefined) {
+        this.setList(className, [object]);
+    }
+    else {
+        classRegistry.add(object.id, object);
+        addToNameRegistry(this, className, [object]);
     }
 };
 
-CmnRegistry.prototype.add = function(className, object){
-    this.setList(className, [object]);
+CmnRegistry.prototype.get = function (className, id) {
+    console.log("get dictionary value for " + className + " id:" + id);
+    var classRegistry = this.registries[className];
+    if (classRegistry == undefined) {
+        return null;
+    }
+    return classRegistry.get(id);
 };
 
-CmnRegistry.prototype.get = function(className, id){
-    console.log("get dictionary value for "+className+" id:"+id);
-    return this.registries[className].get(id);    
-};
-
-CmnRegistry.prototype.getByName = function(className, name){
-    console.log("get by name: class="+className+" name="+name);
-    if(this.nameRegistries[className]){
+CmnRegistry.prototype.getByName = function (className, name) {
+    console.log("get by name: class=" + className + " name=" + name);
+    if (this.nameRegistries[className]) {
         return this.nameRegistries[className].get(name);
     }
-    else{
+    else {
         console.log("entry not found");
         return null;
     }
 };
 
-CmnRegistry.prototype.list = function(className){
+CmnRegistry.prototype.list = function (className) {
     return mapToValueList(this.registries[className].values);
 };
 
-CmnRegistry.prototype.listBy = function(className, property, propertyTest){
+CmnRegistry.prototype.listBy = function (className, property, propertyTest) {
     var items = this.list(className);
     var itemsFound = [];
-    console.log("found "+items.length+" entries in registry "+className);
-    for(var x = 0; x < items.length; x++){
-        if(propertyTest(items[x])){
+    console.log("found " + items.length + " entries in registry " + className);
+    for (var x = 0; x < items.length; x++) {
+        if (propertyTest(items[x])) {
             itemsFound.push(items[x]);
         }
     }

@@ -13,12 +13,7 @@ function runTests(cinnamon) {
         var repository = ticket.split('@')[1];
         equal(repository, 'demo');
     });
-    var folder;
-    test('fetch root folder', function(){
-        folder = cinnamon.fetchFolder();
-        equal($(folder).find('folder > name').text(), 'root');        
-    });
-    
+
     test('fetch list of Acls', function(){
         var aclList = cinnamon.fetchObjectList('acl');
         ok(findObject(aclList, 'sysName', '_default_acl') != undefined);
@@ -103,6 +98,13 @@ function runTests(cinnamon) {
         ok(undeterminedLanguage);
         equal(admin.language, undeterminedLanguage);        
     });
+
+    var folder;
+    test('fetch root folder', function(){
+        folder = cinnamon.fetchFolder();
+        equal(folder.name, 'root');
+    });
+
 }
 
 function findObject(list, field, value){

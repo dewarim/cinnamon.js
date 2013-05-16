@@ -53,14 +53,29 @@ Cinnamon.prototype.fetchFolder = function (id) {
     if (!id) {
         id = 0;
     }
-    var folder;
+    var folder = null;
     $.ajax(this.url + 'folder/fetchFolderXml', {
         async: false,
         type: 'post',
         headers: {ticket: self.ticket},
         success: function (data) {
-            folder = $(data).find('folder');
-        },
+            var registry = self.registry;
+            $(data).find('folders > folder').each(function(index, element){
+                var anyId = $(element).find('folder > id').text();
+                var anyFolder;
+                var parentId = $(element).find('folder > parentId').text();
+                if( anyId == id || anyId == parentId){                    
+                    console.log("found folder!");
+                    folder = new Folder(element, registry);
+                    anyFolder = folder;
+                }
+                else{
+                    console.log("found id: "+anyId);
+                    anyFolder = new Folder(element, registry);
+                }
+                registry.add('folder', anyFolder);
+            });
+        },            
         data: {
             id: id
         },
