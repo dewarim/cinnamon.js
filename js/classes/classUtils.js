@@ -9,6 +9,8 @@
  * @param object an instance of a new Cinnamon object class, for example: Acl
  * @param xml the XML node which defines the class, for example "/acls/acl"
  * @param simpleFields list of top level elements (for example //acl/id, but not //object/relation/id)
+ *  Note: this works only with classes whose XML representation has only unique child elements,
+ *  as jQuery.find() will find *all* elements by the given field name and concatenate their text() content.
  * @param fields Map object of fields that are selected via jQuery selectors, for example:
  *  {foo: 'object > foo'}
  * @param references map of fields that reference other object ids, for example:
