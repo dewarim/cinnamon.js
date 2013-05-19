@@ -86,6 +86,53 @@ Cinnamon.prototype.fetchFolder = function (id) {
     return folder;
 };
 
+Cinnamon.prototype.fetchFolderByPath = function(path){
+    console.log("fetch folder by path");
+    var self = this;
+    var folder = null;
+    if(! path || (path == '/')){
+        // on empty path, return root folder:
+        console.log("path is: "+path+"; return: root folder");
+        folder = self.fetchFolder(0);
+    }
+    else{
+        if(path.match('/^\//')){
+            // always prepend / for root-folder.
+            path = '/'+path;
+        }
+        var name = path.split('/').pop();
+        $.ajax(this.url + 'folder/fetchFolderByPath', {
+            async: false,
+            type: 'post',
+            headers: {ticket: self.ticket},
+            success: function (data) {
+                var registry = self.registry;
+                console.log("Searching for folder: "+name);
+                $(data).find('folders > folder').each(function(index, element){
+                    var myName = $(element).find('folder > name').text();
+                    console.log("Found folder with name "+myName);
+                    var anyFolder;
+                    if( name == myName ){
+                        folder = new Folder(element, registry);
+                        anyFolder = folder;
+                    }
+                    else{
+                        anyFolder = new Folder(element, registry);
+                    }
+                    registry.add('folder', anyFolder);                    
+                });
+            },
+            data: {
+                path:path
+            },
+            statusCode: {
+                500: self.connectionError
+            }
+        });      
+    }
+    return folder;
+};
+
 function objectDict() {
     return {
         acl: {

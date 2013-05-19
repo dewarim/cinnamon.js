@@ -103,8 +103,18 @@ function runTests(cinnamon) {
     test('fetch root folder', function(){
         folder = cinnamon.fetchFolder();
         equal(folder.name, 'root');
+        equal(folder.getParent(), null);
     });
-
+    test('fetch folder by name', function(){
+        console.log("looking for folder by name");
+        folder = cinnamon.fetchFolderByPath('system');
+        equal(folder.name, 'system');        
+        var rootFolder = cinnamon.fetchFolderByPath('/');
+        equal(rootFolder.name, 'root');
+        equal(folder.getParent(), rootFolder);
+        folder = cinnamon.fetchFolderByPath('/system/transient');
+        equal(folder.name, 'transient');
+    });
 }
 
 function findObject(list, field, value){
