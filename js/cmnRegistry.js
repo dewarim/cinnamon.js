@@ -60,10 +60,12 @@ function forEachIn(object, action) {
     }
 }
 
-function CmnRegistry() {
+function CmnRegistry(client) {
+    this.client = client;
     this.registryTypes = {
         acl: {hasName: true},
-        folder: {hasName: true, field: 'name'},
+        // folders have a name
+        folder: {hasName: false, field: 'name'},
         folderType: {hasName: true},
         metasetType: {hasName: true},
         objectType: {hasName: true},
@@ -72,7 +74,10 @@ function CmnRegistry() {
         lifeCycleState: {hasName: true},
         language: {hasName: true},
         uiLanguage: {hasName: true},
-        userAccount: {hasName: true}
+        userAccount: {hasName: true},
+        // technically, an OSD has a name, but it is not unique, so we cannot create a
+        // map of [name:object]
+        osd:{hasName:false}
     };
     this.registries = {};
     this.nameRegistries = {};
@@ -115,12 +120,18 @@ CmnRegistry.prototype.add = function (className, object) {
     }
 };
 
-CmnRegistry.prototype.get = function (className, id) {
+CmnRegistry.prototype.get = function (className, id, doFetch) {
     console.log("get dictionary value for " + className + " id:" + id);
     var classRegistry = this.registries[className];
     if (classRegistry == undefined) {
         return null;
     }
+    var item = classRegistry.get(id);
+    if( ! item && doFetch){
+        console.log("Object "+className+"#"+id+" was not found in registry - trying to fetch it.");
+        this.client.fetchObjectList(className, id)        
+    }
+    
     return classRegistry.get(id);
 };
 

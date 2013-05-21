@@ -11,7 +11,7 @@ function Cinnamon(config) {
     this.password = config.get('password');
     this.repository = config.get('repository');
     this.url = config.get('url');
-    this.registry = new CmnRegistry();
+    this.registry = new CmnRegistry(this);
 
 }
 
@@ -83,6 +83,9 @@ Cinnamon.prototype.fetchFolder = function (id) {
             500: self.connectionError
         }
     });
+    if(folder){
+        console.log("found folder:"+folder.id);
+    }
     return folder;
 };
 
@@ -193,15 +196,39 @@ function objectDict() {
             base: 'users',
             elementName:'user',
             constructor: UserAccount
+        },
+        folder:{
+            getOneFunc:'fetchFolder'
+        },
+        osd:{
+            base: 'objects',
+            elementName: 'object',
+            constructor: Osd,
+            getOne:'osd/fetchObject'
         }
     }
 }
 
-Cinnamon.prototype.fetchObjectList = function(name) {
+Cinnamon.prototype.fetchObjectList = function(name, id) {
     var config = objectDict()[name];
     var self = this;    
     var items = [];
-    $.ajax(this.url + config.controllerAction, {
+    var data = {};
+    var controllerAction = config.controllerAction;
+    if(id != undefined){
+        console.log("looking for specific "+name+"#"+id);
+        data['id'] = id;
+        if(config.getOne){
+            controllerAction = config.getOne
+        }
+        else if(config.getOneFunc){
+            return [self[config.getOneFunc](id)];
+        }
+        else{
+            console.log("Neither getOne or getOneFunc is defined for "+name);
+        }
+    }
+    $.ajax(this.url + controllerAction, {
         async: false,
         type: 'post',
         headers: {ticket: self.ticket},
@@ -217,7 +244,7 @@ Cinnamon.prototype.fetchObjectList = function(name) {
                 myObjects.push(object);
             });
         },
-        data: { },
+        data: data,
         statusCode: {
             500: self.connectionError
         }

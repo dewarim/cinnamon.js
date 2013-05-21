@@ -115,6 +115,15 @@ function runTests(cinnamon) {
         folder = cinnamon.fetchFolderByPath('/system/transient');
         equal(folder.name, 'transient');
     });
+    test('fetch osd', function(){
+        var osds = cinnamon.fetchObjectList('osd', 503);
+        equal(osds.length, 1);
+        var osd = osds[0];
+        // TODO: create test object for this test
+        //  instead of relying of finding one with id 503 in the test db.
+        equal(osd.name, 'Parent');        
+        equal(osd.getParent().id,239 );
+    })
 }
 
 function findObject(list, field, value){
