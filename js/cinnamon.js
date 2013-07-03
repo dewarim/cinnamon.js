@@ -328,3 +328,22 @@ Cinnamon.prototype.fetchObjectList = function(name, id) {
     this.registry.setList(name, items);
     return items;
 };
+
+Cinnamon.prototype.disconnect = function(){
+    var result = false;
+    $.ajax(this.url + 'cinnamon/disconnect',{
+        type:'post',
+        headers: {ticket:self.ticket},
+        data: {ticket:self.ticket},
+        success: function(){
+            console.log("cinnamon: disconnected");
+            result = true;
+        },
+        statusCode:{
+            500: function(){
+                console.log("cinnamon: disconnect failed.");
+            }
+        }
+    });
+    return result;
+};

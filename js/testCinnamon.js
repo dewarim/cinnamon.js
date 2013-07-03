@@ -123,6 +123,18 @@ function runTests(cinnamon) {
         //  instead of relying of finding one with id 503 in the test db.
         equal(osd.name, 'Parent');        
         equal(osd.getParent().id,239 );
+    });
+    test('fetch objects in folder', function(){
+        // TODO: create test objects for this test instead of using current repo layout.
+        var folder = cinnamon.fetchFolderByPath('/templates/pages');
+        var osds = cinnamon.fetchObjects(folder);
+        equal(osds.length, 1);
+        var osd = osds[0];        
+        equal(osd.name, 'my_projects');
+        equal(osd.getParent().id,285);
+    });     
+    test('disconnect', function(){
+        ok(cinnamon.disconnect());
     })
 }
 
