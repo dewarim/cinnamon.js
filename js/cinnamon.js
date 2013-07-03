@@ -44,6 +44,10 @@ Cinnamon.prototype.connect = function () {
     })
 };
 
+Cinnamon.prototype.isConnected = function(){
+    return this.ticket != '::unconnected::';
+};
+
 Cinnamon.prototype.connectionError = function (message) {
     alert(message);
 };
@@ -88,6 +92,78 @@ Cinnamon.prototype.fetchFolder = function (id) {
     }
     return folder;
 };
+
+Cinnamon.prototype.fetchObjects = function(folder){
+    console.log("fetch objects in folder");
+    var self = this;
+    if(! folder){
+        console.log("Invalid folder object");
+        return undefined;
+    }
+    var objects = [];
+    $.ajax(this.url + 'osd/fetchObjects',{
+            async:false,
+            type:'post',
+            data:{
+              parentid:folder.id  
+            },
+            headers: {ticket:self.ticket},
+            success: function(data){
+                var registry = self.registry;
+                console.log("looking for objects");
+                $(data).find('objects > object').each(function(index, element){
+                    var osd = new Osd(element, registry);
+                    console.log("found osd #"+osd.id+", "+osd.name);
+                    registry.add('osd', osd);
+                    objects.push(osd);
+                })
+            },
+            statusCode: {
+                500: function(){
+                    // TODO: proper error handler
+                    console.log("failed to do fetchObjects")
+                }
+            }
+        }
+    );
+    return objects;
+};
+
+/**
+ * Fetch one or more metasets of a given OSD.
+ * @param osd an OSD object
+ * @param metasets (optional) a comma separated list of metaset names
+ * @return if osd is invalid, returns undefined. Otherwise either an empty meta element or
+ * the metadata returned by the server as an XML doc.
+ */
+Cinnamon.prototype.fetchMetadata = function(osd, metasets){
+    var self = this;
+    if(! osd){
+        console.log("invalid object given to fetchMetasets");
+        return undefined;
+    }
+    var meta = '<meta/>';
+    $.ajax(this.url + 'osd/getOsdMeta',{
+        async: false,
+        type: 'post',
+        headers: {ticket: self.ticket},
+        success: function (data) {
+            meta = data;
+        },
+        data: {
+            id:osd.id,
+            metasets:metasets
+        },
+        statusCode: {
+            500: function(){
+                // TODO: proper error handler
+                console.log("failed to do fetchMetadata")
+            }
+        }
+    });
+    return meta;
+};
+
 
 Cinnamon.prototype.fetchFolderByPath = function(path){
     console.log("fetch folder by path");
