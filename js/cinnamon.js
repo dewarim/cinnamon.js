@@ -331,8 +331,10 @@ Cinnamon.prototype.fetchObjectList = function(name, id) {
 
 Cinnamon.prototype.disconnect = function(){
     var result = false;
+    var self = this;
     $.ajax(this.url + 'cinnamon/disconnect',{
         type:'post',
+        async:false,
         headers: {ticket:self.ticket},
         data: {ticket:self.ticket},
         success: function(){
@@ -347,3 +349,40 @@ Cinnamon.prototype.disconnect = function(){
     });
     return result;
 };
+
+Cinnamon.prototype.searchObjects = function(xmlQuery, pageSize, page){
+    var self = this;
+    var objects = [];
+    $.ajax(this.url + 'search/searchObjectsXml',{
+        type:'post',
+        async:false,
+        data:{
+            query:xmlQuery,
+            pageSize:pageSize,
+            page:page
+        },
+        headers: {ticket:self.ticket},
+        success: function(data){
+            var registry = self.registry;
+            console.log("looking for objects");
+            $(data).find('objects > object').each(function(index, element){
+                var osd = new Osd(element, registry);
+                console.log("found osd #"+osd.id+", "+osd.name);
+                registry.add('osd', osd);
+                objects.push(osd);
+            })
+        },
+        statusCode:{
+            500: function(){
+                console.log("cinnamon: searchObjects failed.");
+            }
+        }
+    });
+    return objects;
+};
+
+function padInteger(n, width, z) {
+    z = z || '0';
+    n = n + '';
+    return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
+}
