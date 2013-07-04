@@ -74,7 +74,7 @@ function CmnRegistry(client) {
         lifeCycleState: {hasName: true},
         language: {hasName: true},
         uiLanguage: {hasName: true},
-        userAccount: {hasName: true},
+        userAccount: {hasName: true, field: 'name'},
         // technically, an OSD has a name, but it is not unique, so we cannot create a
         // map of [name:object]
         osd:{hasName:false}
