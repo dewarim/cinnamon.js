@@ -44,7 +44,7 @@ Cinnamon.prototype.connect = function () {
     })
 };
 
-Cinnamon.prototype.isConnected = function(){
+Cinnamon.prototype.isConnected = function () {
     return this.ticket != '::unconnected::';
 };
 
@@ -64,22 +64,22 @@ Cinnamon.prototype.fetchFolder = function (id) {
         headers: {ticket: self.ticket},
         success: function (data) {
             var registry = self.registry;
-            $(data).find('folders > folder').each(function(index, element){
+            $(data).find('folders > folder').each(function (index, element) {
                 var anyId = $(element).find('folder > id').text();
                 var anyFolder;
                 var parentId = $(element).find('folder > parentId').text();
-                if( anyId == id || anyId == parentId){                    
+                if (anyId == id || anyId == parentId) {
                     console.log("found folder!");
                     folder = new Folder(element, registry);
                     anyFolder = folder;
                 }
-                else{
-                    console.log("found id: "+anyId);
+                else {
+                    console.log("found id: " + anyId);
                     anyFolder = new Folder(element, registry);
                 }
                 registry.add('folder', anyFolder);
             });
-        },            
+        },
         data: {
             id: id
         },
@@ -87,39 +87,39 @@ Cinnamon.prototype.fetchFolder = function (id) {
             500: self.connectionError
         }
     });
-    if(folder){
-        console.log("found folder:"+folder.id);
+    if (folder) {
+        console.log("found folder:" + folder.id);
     }
     return folder;
 };
 
-Cinnamon.prototype.fetchObjects = function(folder){
+Cinnamon.prototype.fetchObjects = function (folder) {
     console.log("fetch objects in folder");
     var self = this;
-    if(! folder){
+    if (!folder) {
         console.log("Invalid folder object");
         return undefined;
     }
     var objects = [];
-    $.ajax(this.url + 'osd/fetchObjects',{
-            async:false,
-            type:'post',
-            data:{
-              parentid:folder.id  
+    $.ajax(this.url + 'osd/fetchObjects', {
+            async: false,
+            type: 'post',
+            data: {
+                parentid: folder.id
             },
-            headers: {ticket:self.ticket},
-            success: function(data){
+            headers: {ticket: self.ticket},
+            success: function (data) {
                 var registry = self.registry;
                 console.log("looking for objects");
-                $(data).find('objects > object').each(function(index, element){
+                $(data).find('objects > object').each(function (index, element) {
                     var osd = new Osd(element, registry);
-                    console.log("found osd #"+osd.id+", "+osd.name);
+                    console.log("found osd #" + osd.id + ", " + osd.name);
                     registry.add('osd', osd);
                     objects.push(osd);
                 })
             },
             statusCode: {
-                500: function(){
+                500: function () {
                     // TODO: proper error handler
                     console.log("failed to do fetchObjects")
                 }
@@ -136,14 +136,14 @@ Cinnamon.prototype.fetchObjects = function(folder){
  * @return if osd is invalid, returns undefined. Otherwise either an empty meta element or
  * the metadata returned by the server as an XML doc.
  */
-Cinnamon.prototype.fetchMetadata = function(osd, metasets){
+Cinnamon.prototype.fetchMetadata = function (osd, metasets) {
     var self = this;
-    if(! osd){
+    if (!osd) {
         console.log("invalid object given to fetchMetasets");
         return undefined;
     }
     var meta = '<meta/>';
-    $.ajax(this.url + 'osd/getOsdMeta',{
+    $.ajax(this.url + 'osd/getOsdMeta', {
         async: false,
         type: 'post',
         headers: {ticket: self.ticket},
@@ -151,11 +151,11 @@ Cinnamon.prototype.fetchMetadata = function(osd, metasets){
             meta = data;
         },
         data: {
-            id:osd.id,
-            metasets:metasets
+            id: osd.id,
+            metasets: metasets
         },
         statusCode: {
-            500: function(){
+            500: function () {
                 // TODO: proper error handler
                 console.log("failed to do fetchMetadata")
             }
@@ -165,19 +165,19 @@ Cinnamon.prototype.fetchMetadata = function(osd, metasets){
 };
 
 
-Cinnamon.prototype.fetchFolderByPath = function(path){
+Cinnamon.prototype.fetchFolderByPath = function (path) {
     console.log("fetch folder by path");
     var self = this;
     var folder = null;
-    if(! path || (path == '/')){
+    if (!path || (path == '/')) {
         // on empty path, return root folder:
-        console.log("path is: "+path+"; return: root folder");
+        console.log("path is: " + path + "; return: root folder");
         folder = self.fetchFolder(0);
     }
-    else{
-        if(path.match('/^\//')){
+    else {
+        if (path.match('/^\//')) {
             // always prepend / for root-folder.
-            path = '/'+path;
+            path = '/' + path;
         }
         var name = path.split('/').pop();
         $.ajax(this.url + 'folder/fetchFolderByPath', {
@@ -186,28 +186,28 @@ Cinnamon.prototype.fetchFolderByPath = function(path){
             headers: {ticket: self.ticket},
             success: function (data) {
                 var registry = self.registry;
-                console.log("Searching for folder: "+name);
-                $(data).find('folders > folder').each(function(index, element){
+                console.log("Searching for folder: " + name);
+                $(data).find('folders > folder').each(function (index, element) {
                     var myName = $(element).find('folder > name').text();
-                    console.log("Found folder with name "+myName);
+                    console.log("Found folder with name " + myName);
                     var anyFolder;
-                    if( name == myName ){
+                    if (name == myName) {
                         folder = new Folder(element, registry);
                         anyFolder = folder;
                     }
-                    else{
+                    else {
                         anyFolder = new Folder(element, registry);
                     }
-                    registry.add('folder', anyFolder);                    
+                    registry.add('folder', anyFolder);
                 });
             },
             data: {
-                path:path
+                path: path
             },
             statusCode: {
                 500: self.connectionError
             }
-        });      
+        });
     }
     return folder;
 };
@@ -228,7 +228,7 @@ function objectDict() {
             controllerAction: 'folderType/listXml',
             base: 'folderTypes',
             constructor: FolderType
-        },  
+        },
         metasetType: {
             controllerAction: 'metasetType/listXml',
             base: 'metasetTypes',
@@ -238,7 +238,7 @@ function objectDict() {
             controllerAction: 'format/listXml',
             base: 'formats',
             constructor: Format
-        },    
+        },
         permission: {
             controllerAction: 'permission/listXml',
             base: 'permissions',
@@ -252,56 +252,56 @@ function objectDict() {
         uiLanguage: {
             controllerAction: 'uiLanguage/listXml',
             base: 'languages',
-            elementName:'language',
+            elementName: 'language',
             constructor: UiLanguage
         },
-        lifeCycleState:{
+        lifeCycleState: {
             controllerAction: 'lifeCycle/listLifeCyclesXml',
             base: 'lifecycles > lifecycle > states',
-            elementName:'lifecycleState',
+            elementName: 'lifecycleState',
             constructor: LifeCycleState
         },
-        lifeCycle:{
+        lifeCycle: {
             controllerAction: 'lifeCycle/listLifeCyclesXml',
             base: 'lifecycles',
-            elementName:'lifecycle',
+            elementName: 'lifecycle',
             constructor: LifeCycle
         },
-        userAccount:{
+        userAccount: {
             controllerAction: 'userAccount/listXml',
             base: 'users',
-            elementName:'user',
+            elementName: 'user',
             constructor: UserAccount
         },
-        folder:{
-            getOneFunc:'fetchFolder'
+        folder: {
+            getOneFunc: 'fetchFolder'
         },
-        osd:{
+        osd: {
             base: 'objects',
             elementName: 'object',
             constructor: Osd,
-            getOne:'osd/fetchObject'
+            getOne: 'osd/fetchObject'
         }
     }
 }
 
-Cinnamon.prototype.fetchObjectList = function(name, id) {
+Cinnamon.prototype.fetchObjectList = function (name, id) {
     var config = objectDict()[name];
-    var self = this;    
+    var self = this;
     var items = [];
     var data = {};
     var controllerAction = config.controllerAction;
-    if(id != undefined){
-        console.log("looking for specific "+name+"#"+id);
+    if (id != undefined) {
+        console.log("looking for specific " + name + "#" + id);
         data['id'] = id;
-        if(config.getOne){
+        if (config.getOne) {
             controllerAction = config.getOne
         }
-        else if(config.getOneFunc){
+        else if (config.getOneFunc) {
             return [self[config.getOneFunc](id)];
         }
-        else{
-            console.log("Neither getOne or getOneFunc is defined for "+name);
+        else {
+            console.log("Neither getOne or getOneFunc is defined for " + name);
         }
     }
     $.ajax(this.url + controllerAction, {
@@ -313,8 +313,8 @@ Cinnamon.prototype.fetchObjectList = function(name, id) {
             var registry = self.registry;
             var elementName = config.elementName != undefined ? config.elementName : name;
             var path = config.base + ' > ' + elementName;
-            console.log("path = "+path);
-            $(data).find(path).each(function(index, element){                
+            console.log("path = " + path);
+            $(data).find(path).each(function (index, element) {
                 var object = new config['constructor'](element, registry);
 //                console.log("new object: "+object.name);
                 myObjects.push(object);
@@ -329,20 +329,20 @@ Cinnamon.prototype.fetchObjectList = function(name, id) {
     return items;
 };
 
-Cinnamon.prototype.disconnect = function(){
+Cinnamon.prototype.disconnect = function () {
     var result = false;
     var self = this;
-    $.ajax(this.url + 'cinnamon/disconnect',{
-        type:'post',
-        async:false,
-        headers: {ticket:self.ticket},
-        data: {ticket:self.ticket},
-        success: function(){
+    $.ajax(this.url + 'cinnamon/disconnect', {
+        type: 'post',
+        async: false,
+        headers: {ticket: self.ticket},
+        data: {ticket: self.ticket},
+        success: function () {
             console.log("cinnamon: disconnected");
             result = true;
         },
-        statusCode:{
-            500: function(){
+        statusCode: {
+            500: function () {
                 console.log("cinnamon: disconnect failed.");
             }
         }
@@ -350,30 +350,30 @@ Cinnamon.prototype.disconnect = function(){
     return result;
 };
 
-Cinnamon.prototype.searchObjects = function(xmlQuery, pageSize, page){
+Cinnamon.prototype.searchObjects = function (xmlQuery, pageSize, page) {
     var self = this;
     var objects = [];
-    $.ajax(this.url + 'search/searchObjectsXml',{
-        type:'post',
-        async:false,
-        data:{
-            query:xmlQuery,
-            pageSize:pageSize,
-            page:page
+    $.ajax(this.url + 'search/searchObjectsXml', {
+        type: 'post',
+        async: false,
+        data: {
+            query: xmlQuery,
+            pageSize: pageSize,
+            page: page
         },
-        headers: {ticket:self.ticket},
-        success: function(data){
+        headers: {ticket: self.ticket},
+        success: function (data) {
             var registry = self.registry;
             console.log("looking for objects");
-            $(data).find('objects > object').each(function(index, element){
+            $(data).find('objects > object').each(function (index, element) {
                 var osd = new Osd(element, registry);
-                console.log("found osd #"+osd.id+", "+osd.name);
+                console.log("found osd #" + osd.id + ", " + osd.name);
                 registry.add('osd', osd);
                 objects.push(osd);
             })
         },
-        statusCode:{
-            500: function(){
+        statusCode: {
+            500: function () {
                 console.log("cinnamon: searchObjects failed.");
             }
         }
@@ -386,3 +386,77 @@ function padInteger(n, width, z) {
     n = n + '';
     return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
 }
+
+/**
+ * Create a new OSD object in the Cinnamon repository.
+ * 
+ * @param params
+ *  valid fields in params map:
+ *      - parentid: id of parent folder
+ *      - preid: id of predecessor (otpional)
+ *      - name: name of object
+ *      - metadata: string containing an XML metadata object (optional)
+ *      - objtype_id: id of ObjectType (optional, defaults to _default_objtype)
+ *      - objtype: name of ObjectType (choose one of objtype_id or objtype)
+ *      - format_id: id of format (note: you should use a FormData object to upload files)
+ *      - format: name of Format object (choose one of format_id or format)
+ *      - acl_id: id of ACL object (optional, defaults to _default_acl)
+ *      - acl: name of ACL to set (choose either one of acl_id or acl)
+ *      - language_id: optional id specifying this object's language.
+ * @param formData
+ * @returns {*}
+ */
+Cinnamon.prototype.createOsd = function (params, formData) {
+    var self = this;
+    var osd = null;
+    var successHandler =  function (data) {
+        var registry = self.registry;
+        console.log("looking for objects");
+        var id = $(data).find('objectId').text();
+        osd = self.fetchObjectList('osd', id);
+        registry.add('osd', osd);
+    };
+    if (formData) {
+        $.ajax(this.url + 'osd/createOsd', {
+            type: 'post',
+            async: false,
+            data: formData,
+            contentType: false,
+            processData: false,
+            headers: {ticket: self.ticket},
+            success: successHandler,
+            statusCode: {
+                500: function () {
+                    console.log("cinnamon: createOsd failed.");
+                }
+            }
+        });
+    }
+    else {
+        $.ajax(this.url + 'osd/createOsd', {
+            type: 'post',
+            async: false,
+            data: {
+                parentid: params.parentId,
+                preid: params.preId,
+                name: params.name,
+                metadata: params.metadata,
+                objtype_id: params.objectTypeId,
+                objtype: params.objectType,
+                format_id: params.format,
+                format: params.format,
+                acl_id: params.aclId,
+                acl: params.acl,
+                language_id: params.languageId
+            },
+            headers: {ticket: self.ticket},
+            success: successHandler,
+            statusCode: {
+                500: function () {
+                    console.log("cinnamon: createOsd failed.");
+                }
+            }
+        });
+    }
+    return osd;
+};
