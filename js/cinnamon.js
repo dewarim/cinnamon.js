@@ -389,7 +389,7 @@ function padInteger(n, width, z) {
 
 /**
  * Create a new OSD object in the Cinnamon repository.
- * 
+ *
  * @param params
  *  valid fields in params map:
  *      - parentid: id of parent folder
@@ -409,12 +409,17 @@ function padInteger(n, width, z) {
 Cinnamon.prototype.createOsd = function (params, formData) {
     var self = this;
     var osd = null;
-    var successHandler =  function (data) {
+    var successHandler = function (data) {
         var registry = self.registry;
         console.log("looking for objects");
         var id = $(data).find('objectId').text();
         osd = self.fetchObjectList('osd', id);
-        registry.add('osd', osd);
+        if(osd.length){
+            registry.add('osd', osd[0]);
+        }
+        else{
+            console.log("no osd found after create osd. ObjectId: "+id);
+        }
     };
     if (formData) {
         $.ajax(this.url + 'osd/createOsd', {
@@ -458,5 +463,50 @@ Cinnamon.prototype.createOsd = function (params, formData) {
             }
         });
     }
-    return osd;
+    return osd.length ? osd[0] : null;
 };
+
+/**
+ * Create a render task.
+ * @param formData
+ *  - name: name of the RenderTask
+ *  - parentid: folder where the task object should be created
+ *  - metadata: a metaset for the renderServer, should be in the form:
+ *  <pre>{@code
+ *  <metaset type="render_input"><sourceId>542</sourceId><renderTaskName>foo</renderTaskName></metaset>
+ *  }</pre>
+ *  
+ * @returns {*}
+ */
+Cinnamon.prototype.createRenderTask = function (formData) {
+    var self = this;
+    var osd = null;
+    var successHandler = function (data) {
+        var registry = self.registry;
+        console.log("looking for objects");
+        var id = $(data).find('startRenderTask > taskObjectId').text();
+        osd = self.fetchObjectList('osd', id);
+        if(osd.length){
+            registry.add('osd', osd[0]);
+        }
+        else{
+            console.log("no osd found after createRenderTask. ObjectId: "+id);
+        }
+    };
+    $.ajax(this.url + 'renderServer/createRenderTask', {
+        type: 'post',
+        async: false,
+        data: formData,
+        contentType: false,
+        processData: false,
+        headers: {ticket: self.ticket},
+        success: successHandler,
+        statusCode: {
+            500: function () {
+                console.log("cinnamon: createOsd failed.");
+            }
+        }
+    });
+    return osd.length ? osd[0] : null;
+};
+
