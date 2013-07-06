@@ -510,3 +510,76 @@ Cinnamon.prototype.createRenderTask = function (formData) {
     return osd.length ? osd[0] : null;
 };
 
+Cinnamon.prototype.deleteOsd = function(id){
+    var self = this;
+    var result = false;
+    var successHandler = function (data) {
+        console.log("looking for success message");
+        var successNode = $(data).find('success');
+        if(successNode.length){
+            result = successNode.text() == 'success.delete.object';
+        }
+    };
+    $.ajax(this.url + 'osd/deleteXml', {
+        type: 'post',
+        async: false,
+        data: {
+            id:id
+        },
+        headers: {ticket: self.ticket},
+        success: successHandler,
+        statusCode: {
+            500: function () {
+                console.log("cinnamon: deleteOsd failed.");
+            }
+        }
+    });
+    return result;
+};
+
+/**
+ * Set system metadata of an OSD.
+ * @param id the obligatory id of the OSD that will be updated.
+ * @param parameter contains the name of the field that will be updated
+ * The following parameters can be set:
+ * <ul>
+ * <li>parentid (= id of folder in which the object or folder resides)</li>
+ * <li>name</li>
+ * <li>owner  (=id of the owner)</li>
+ * <li>procstate </li>
+ * <li>acl_id (= id of an ACL)</li>
+ * <li>objtype  (currently, this parameter is the _name_ of an objtype, NOT an id!)</li>
+ * <li>language_id (= id of a language)</li>
+ * </ul>
+ * - value: the new value.
+ * @returns {boolean}
+ */
+Cinnamon.prototype.updateSysMeta = function(id, parameter, value){
+    var self = this;
+    var result = false;
+    var successHandler = function (data) {
+        console.log("looking for success message");
+        var successNode = $(data).find('success');
+        if(successNode.length){
+            result = successNode.text() == 'success.set.sys_meta';
+        }
+    };
+    $.ajax(this.url + 'osd/updateSysMetaXml', {
+        type: 'post',
+        async: false,
+        data:{
+            id:id,
+            parameter:parameter,
+            value:value
+        }, 
+        headers: {ticket: self.ticket},
+        success: successHandler,
+        statusCode: {
+            500: function () {
+                console.log("cinnamon: updateSysMeta failed.");
+            }
+        }
+    });
+    return result;
+};
+
