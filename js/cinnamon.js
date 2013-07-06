@@ -287,6 +287,11 @@ function objectDict() {
             elementName: 'object',
             constructor: Osd,
             getOne: 'osd/fetchObject'
+        },
+        relation: {
+            base: 'relations',
+            elementName: 'relation',
+            constructor: Relation
         }
     }
 }
@@ -756,4 +761,36 @@ Cinnamon.prototype.unlock = function(id){
         }
     });
     return result;
+};
+
+Cinnamon.prototype.fetchRelations = function (name, leftId, rightId, includeMetadata) {
+    var self = this;
+    var objects = [];
+    $.ajax(this.url + 'relation/listXml', {
+        type: 'post',
+        async: false,
+        data: {
+            name:name,
+            leftid:leftId,
+            rightid:rightId,
+            include_metadata:includeMetadata
+        },
+        headers: {ticket: self.ticket},
+        success: function (data) {
+            var registry = self.registry;
+            console.log("looking for relations");
+            $(data).find('relations > relations').each(function (index, element) {
+                var relation = new Relation(element, registry);
+                console.log("found relation #" + relation.id + ", type: " + relation.typeName);
+                registry.add('relation', relation);
+                objects.push(relation);
+            })
+        },
+        statusCode: {
+            500: function () {
+                console.log("cinnamon: searchObjects failed.");
+            }
+        }
+    });
+    return objects;
 };
