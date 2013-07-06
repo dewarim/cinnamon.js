@@ -131,15 +131,15 @@ Cinnamon.prototype.fetchObjects = function (folder) {
 
 /**
  * Fetch one or more metasets of a given OSD.
- * @param osd an OSD object
+ * @param id id of an OSD object
  * @param metasets (optional) a comma separated list of metaset names
  * @return if osd is invalid, returns undefined. Otherwise either an empty meta element or
  * the metadata returned by the server as an XML doc.
  */
-Cinnamon.prototype.fetchMetadata = function (osd, metasets) {
+Cinnamon.prototype.fetchMetadata = function (id, metasets) {
     var self = this;
-    if (!osd) {
-        console.log("invalid object given to fetchMetasets");
+    if (!id) {
+        console.log("invalid object id given to fetchMetasets");
         return undefined;
     }
     var meta = '<meta/>';
@@ -147,11 +147,11 @@ Cinnamon.prototype.fetchMetadata = function (osd, metasets) {
         async: false,
         type: 'post',
         headers: {ticket: self.ticket},
-        success: function (data) {
+        success: function (data) {            
             meta = data;
         },
         data: {
-            id: osd.id,
+            id: id,
             metasets: metasets
         },
         statusCode: {
@@ -583,7 +583,15 @@ Cinnamon.prototype.updateSysMeta = function(id, parameter, value){
     return result;
 };
 
-
+/**
+ * Upload file content to an existing object.
+ * @param formData with the following fields:
+ *  - file: the file upload field
+ *  - id: the id of the OSD
+ *  - format: the format of the uploaded content - this is the name of 
+ *      a format object in the Cinnamon repository, for example 'format.txt'
+ * @returns {boolean}
+ */
 Cinnamon.prototype.saveContent = function (formData) {
     var self = this;
     var result = false;
@@ -611,5 +619,82 @@ Cinnamon.prototype.saveContent = function (formData) {
             }
         });
     }  
+    return result;
+};
+
+/**
+ * Update custom metadata of an existing object.
+ * Note: this method requires a complete metadata string with all metasets.
+ * @param id the id of the object to update
+ * @param metadata the complete XML metadata string
+ * @param write_policy one of [one of WRITE, IGNORE, BRANCH], see Cinnamon server for more information;
+ *  defaults to BRANCH. Leave as is, unless you know what you are doing.
+ * @returns {boolean}
+ */
+Cinnamon.prototype.updateMetadata = function(id, metadata, write_policy){
+    var self = this;
+    var result = false;
+    var successHandler = function (data) {
+        console.log("looking for success message");
+        var successNode = $(data).find('success');
+        if(successNode.length){
+            result = successNode.text() == 'success.set.metadata';
+        }
+    };
+    $.ajax(this.url + 'osd/saveMetadataXml', {
+        type: 'post',
+        async: false,
+        data:{
+            id:id,
+            metadata:metadata,
+            write_policy: write_policy ? write_policy : 'BRANCH'
+        },
+        headers: {ticket: self.ticket},
+        success: successHandler,
+        statusCode: {
+            500: function () {
+                console.log("cinnamon: updateSysMeta failed.");
+            }
+        }
+    });
+    return result;
+};
+
+/**
+ * Create or update the metaset of an existing object.
+ * @param id the id of the object to update
+ * @param class_name "Folder" or "OSD", depending on type.
+ * @param type_name the name of the metaset type
+ * @param content the XML metaset string
+ * 
+ * @param write_policy one of [one of WRITE, IGNORE, BRANCH], see Cinnamon server for more information;
+ *  defaults to BRANCH. Leave as is, unless you know what you are doing.
+ * @returns an empty '<meta/>'-string on failure, or the updated metaset. 
+ */
+Cinnamon.prototype.saveMetaset = function(id, class_name, type_name, content, write_policy){
+    var self = this;
+    var result = '<meta/>';
+    var successHandler = function (data) {
+        console.log("looking for success message");
+        result = data;
+    };
+    $.ajax(this.url + 'metaset/saveMetaset', {
+        type: 'post',
+        async: false,
+        data:{
+            id:id,
+            class_name:class_name,
+            type_name:type_name,           
+            content:content,            
+            write_policy: write_policy ? write_policy : 'BRANCH'
+        },
+        headers: {ticket: self.ticket},
+        success: successHandler,
+        statusCode: {
+            500: function () {
+                console.log("cinnamon: updateSysMeta failed.");
+            }
+        }
+    });
     return result;
 };
