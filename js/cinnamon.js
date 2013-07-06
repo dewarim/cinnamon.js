@@ -551,7 +551,7 @@ Cinnamon.prototype.deleteOsd = function(id){
  * <li>objtype  (currently, this parameter is the _name_ of an objtype, NOT an id!)</li>
  * <li>language_id (= id of a language)</li>
  * </ul>
- * - value: the new value.
+ * @param value the new value.
  * @returns {boolean}
  */
 Cinnamon.prototype.updateSysMeta = function(id, parameter, value){
