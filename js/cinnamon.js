@@ -675,7 +675,6 @@ Cinnamon.prototype.saveMetaset = function(id, class_name, type_name, content, wr
     var self = this;
     var result = '<meta/>';
     var successHandler = function (data) {
-        console.log("looking for success message");
         result = data;
     };
     $.ajax(this.url + 'metaset/saveMetaset', {
@@ -687,6 +686,60 @@ Cinnamon.prototype.saveMetaset = function(id, class_name, type_name, content, wr
             type_name:type_name,           
             content:content,            
             write_policy: write_policy ? write_policy : 'BRANCH'
+        },
+        headers: {ticket: self.ticket},
+        success: successHandler,
+        statusCode: {
+            500: function () {
+                console.log("cinnamon: updateSysMeta failed.");
+            }
+        }
+    });
+    return result;
+};
+
+Cinnamon.prototype.lock = function(id){
+    var self = this;
+    var result = false;
+    var successHandler = function (data) {
+        console.log("looking for success message");
+        var successNode = $(data).find('success');
+        if(successNode.length){
+            result = successNode.text() == 'success.object.lock';
+        }
+    };
+    $.ajax(this.url + 'osd/lockXml', {
+        type: 'post',
+        async: false,
+        data:{
+            id:id
+        },
+        headers: {ticket: self.ticket},
+        success: successHandler,
+        statusCode: {
+            500: function () {
+                console.log("cinnamon: updateSysMeta failed.");
+            }
+        }
+    });
+    return result;
+};
+
+Cinnamon.prototype.unlock = function(id){
+    var self = this;
+    var result = false;
+    var successHandler = function (data) {
+        console.log("looking for success message");
+        var successNode = $(data).find('success');
+        if(successNode.length){
+            result = successNode.text() == 'success.object.unlock';
+        }
+    };
+    $.ajax(this.url + 'osd/unlockXml', {
+        type: 'post',
+        async: false,
+        data:{
+            id:id
         },
         headers: {ticket: self.ticket},
         success: successHandler,
