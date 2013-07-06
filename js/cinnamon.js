@@ -583,3 +583,33 @@ Cinnamon.prototype.updateSysMeta = function(id, parameter, value){
     return result;
 };
 
+
+Cinnamon.prototype.saveContent = function (formData) {
+    var self = this;
+    var result = false;
+    var successHandler = function (data) {
+        console.log("looking for success message");
+        var successNode = $(data).find('success');
+        if(successNode.length){
+            result = successNode.text() == 'success.set.content';
+        }
+    };
+
+    if (formData) {
+        $.ajax(this.url + 'osd/saveContentXml', {
+            type: 'post',
+            async: false,
+            data: formData,
+            contentType: false,
+            processData: false,
+            headers: {ticket: self.ticket},
+            success: successHandler,
+            statusCode: {
+                500: function () {
+                    console.log("cinnamon: saveContent failed.");
+                }
+            }
+        });
+    }  
+    return result;
+};
