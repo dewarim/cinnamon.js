@@ -79,6 +79,14 @@ function runTests(cinnamon) {
         equal(cinnamon.registry.list('lifeCycleState').length,4);
         ok(findObject(lcsList, 'sysName', 'newRenderTask'));
     });
+    
+    test('fetch list of relationTypes', function(){
+        var rtList = cinnamon.fetchObjectList('relationType');
+        ok(rtList.length > 10);
+        ok(cinnamon.registry.getByName('relationType', 'child_content'));
+        equal(cinnamon.registry.list('lifeCycleState').length, rtList.length);
+        ok(findObject(rtList, 'sysName', 'child_content'));
+    });
 
     test('fetch list of LifeCycles', function(){
         var lcList = cinnamon.fetchObjectList('lifeCycle');

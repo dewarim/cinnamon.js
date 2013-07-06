@@ -67,6 +67,7 @@ function CmnRegistry(client) {
         // folders have a name
         folder: {hasName: false, field: 'name'},
         folderType: {hasName: true},
+        relationType: {hasName: true},
         metasetType: {hasName: true},
         objectType: {hasName: true},
         format: {hasName: true},

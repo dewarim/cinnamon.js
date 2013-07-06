@@ -267,6 +267,12 @@ function objectDict() {
             elementName: 'lifecycle',
             constructor: LifeCycle
         },
+        relationType: {
+            controllerAction: 'relationType/listXml',
+            base: 'relationTypes',
+            elementName: 'relationType',
+            constructor: RelationType
+        },
         userAccount: {
             controllerAction: 'userAccount/listXml',
             base: 'users',
