@@ -336,7 +336,12 @@ Cinnamon.prototype.fetchObjectList = function (name, id) {
             500: self.connectionError
         }
     });
-    this.registry.setList(name, items);
+    if(id == undefined){
+        this.registry.setList(name, items);
+    }
+    else{
+        this.registry.add(name, items[0]);
+    }
     return items;
 };
 
