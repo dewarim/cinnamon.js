@@ -286,12 +286,14 @@ function objectDict() {
             base: 'objects',
             elementName: 'object',
             constructor: Osd,
-            getOne: 'osd/fetchObject'
+            getOne: 'osd/fetchObject',
+            deleteControllerAction:'osd/deleteXml'
         },
         relation: {
             base: 'relations',
             elementName: 'relation',
-            constructor: Relation
+            constructor: Relation,
+            deleteControllerAction:'relation/deleteXml'
         }
     }
 }
@@ -340,7 +342,9 @@ Cinnamon.prototype.fetchObjectList = function (name, id) {
         this.registry.setList(name, items);
     }
     else{
-        this.registry.add(name, items[0]);
+        if(items.length > 0){
+            this.registry.add(name, items[0]);
+        }
     }
     return items;
 };
@@ -784,7 +788,7 @@ Cinnamon.prototype.fetchRelations = function (name, leftId, rightId, includeMeta
         success: function (data) {
             var registry = self.registry;
             console.log("looking for relations");
-            $(data).find('relations > relations').each(function (index, element) {
+            $(data).find('relations > relation').each(function (index, element) {
                 var relation = new Relation(element, registry);
                 console.log("found relation #" + relation.id + ", type: " + relation.typeName);
                 registry.add('relation', relation);
@@ -798,4 +802,39 @@ Cinnamon.prototype.fetchRelations = function (name, leftId, rightId, includeMeta
         }
     });
     return objects;
+};
+
+
+Cinnamon.prototype.delete = function(className, id){
+    var self = this;
+    var result = false;
+    var deleteControllerAction = objectDict()[className].deleteControllerAction;
+    if(! deleteControllerAction){
+        console.log("Class "+className+" does not have a dedicated delete action - failed to delete object "+id);
+        return;
+    }
+    var successHandler = function (data) {
+        console.log("looking for success message");
+        var successNode = $(data).find('success');
+        if(successNode.length){
+            result = successNode.text().match(/success\.delete.*/);
+            console.log("successfully deleted "+className+" #"+id);
+            cinnamon.registry.remove(className, id);
+        }
+    };
+    $.ajax(this.url + deleteControllerAction, {
+        type: 'post',
+        async: false,
+        data:{
+            id:id
+        },
+        headers: {ticket: self.ticket},
+        success: successHandler,
+        statusCode: {
+            500: function () {
+                console.log("cinnamon: delete relation failed.");
+            }
+        }
+    });
+    return result;
 };

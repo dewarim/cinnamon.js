@@ -39,7 +39,7 @@ function addFields(object, xml, simpleFields, fields, references, registry) {
 //            console.log("ref.type:" + ref.type);
 //            console.log("ref.path:" + ref.path);
 //            console.log("ref.field:" + ref.field);
-            object[ref.field] = registry.get(ref.type, $(xml).find(ref.path).text());
+            object[ref.field] = registry.get(ref.type, $(xml).find(ref.path).text(), ref.doFetch);
         }
     }
 }

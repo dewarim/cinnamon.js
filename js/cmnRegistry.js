@@ -111,6 +111,22 @@ function addToNameRegistry(registry, name, objects) {
     }
 }
 
+function removeFromNameRegistry(registry, name, objects) {
+    var rType = registry.registryTypes[name];
+    if (rType != undefined && rType.hasName) {
+        var nameField = 'sysName';
+        if (rType.hasOwnProperty('field')) {
+            nameField = rType.field;
+        }
+        var nameReg = registry.nameRegistries[name];
+        if (nameReg != undefined) {
+            for (var x = 0; x < objects; x++) {
+                nameReg.add(objects[x][nameField], undefined);
+            }
+        }
+    }
+}
+
 CmnRegistry.prototype.add = function (className, object) {
     var classRegistry = this.registries[className];
     if (classRegistry == undefined) {
@@ -119,6 +135,14 @@ CmnRegistry.prototype.add = function (className, object) {
     else {
         classRegistry.add(object.id, object);
         addToNameRegistry(this, className, [object]);
+    }
+};
+
+CmnRegistry.prototype.remove = function (className, object) {
+    var classRegistry = this.registries[className];
+    if (classRegistry) {
+        classRegistry.add(object.id, null);        
+        removeFromNameRegistry(this, className, [object]);
     }
 };
 

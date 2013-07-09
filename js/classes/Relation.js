@@ -4,8 +4,8 @@ function Relation(xml, registry) {
     addFields(this, xml, null,
         {id: 'relation > id', typeName:'relation > type'},
         [
-            {type: 'relationType', path: 'relationType > typeId', field: 'type'},
-            {type: 'osd', path: 'relationType > leftId', field: 'leftOsd'},
-            {type: 'osd', path: 'relationType > rightId', field: 'rightOsd'}
+            {type: 'relation', path: 'relation > typeId', field: 'type'},
+            {type: 'osd', path: 'relation > leftId', field: 'leftOsd', doFetch:true},
+            {type: 'osd', path: 'relation > rightId', field: 'rightOsd', doFetch:true}
         ], registry);
 }
