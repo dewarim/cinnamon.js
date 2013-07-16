@@ -14,7 +14,10 @@ function Folder(xml, registry) {
             {type: 'acl', path: 'folder > aclId', field: 'acl'},
             {type: 'folderType', path: 'folder > typeId', field: 'type'}
         ], registry);
-
+    var meta = $(xml).find('folder > meta');
+    if(meta.length){
+        this.meta = meta.clone();
+    }
 }
 
 Folder.prototype.getParent = function () {

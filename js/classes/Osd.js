@@ -34,7 +34,10 @@ function Osd(xml, registry) {
             {type: 'language', path: 'object > language > id', field: 'language'},
             {type: 'lifeCycleState', path: 'object > lifeCycleState > id', field: 'lifeCycleState'}
         ], registry);
-
+    var meta = $(xml).find('object > meta'); 
+    if(meta.length){
+        this.meta = meta.clone();
+    }
 }
 
 Osd.prototype.getParent = function () {
