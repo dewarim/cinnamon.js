@@ -25,11 +25,11 @@ function addFields(object, xml, simpleFields, fields, references, registry) {
         }
     }
     for (var field in fields) {
-        console.log("field: "+field);
+//        console.log("field: "+field);
         if (fields.hasOwnProperty(field)) {
-            console.log("looking for: "+field+" in "+fields[field]);
+//            console.log("looking for: "+field+" in "+fields[field]);
             var val = $(xml).find(fields[field]).text();
-            console.log("value: "+val);
+//            console.log("value: "+val);
             object[field] = val
         }
     }
