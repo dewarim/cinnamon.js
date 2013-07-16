@@ -23,9 +23,12 @@ Cinnamon.prototype.extractTicket = function (data) {
 
 /**
  * Connect to a Cinnamon 3 server via the xml API.
+ * @param errorHandler an optional function which is used to display a login error.
+ * If not set, use the default connectionError function.
  */
-Cinnamon.prototype.connect = function () {
+Cinnamon.prototype.connect = function (errorHandler) {
     var self = this;
+    self.loginError = errorHandler ? errorHandler : self.connectionError;
     $.ajax(this.url + 'cinnamon/connect', {
         async: false,
         type: 'post',
@@ -39,7 +42,7 @@ Cinnamon.prototype.connect = function () {
             repository: this.repository
         },
         statusCode: {
-            500: self.connectionError
+            500: self.loginError
         }
     })
 };
@@ -370,7 +373,7 @@ Cinnamon.prototype.disconnect = function () {
     return result;
 };
 
-Cinnamon.prototype.searchObjects = function (xmlQuery, pageSize, page) {
+Cinnamon.prototype.searchObjects = function (xmlQuery, pageSize, page, metasets) {
     var self = this;
     var objects = [];
     $.ajax(this.url + 'search/searchObjectsXml', {
@@ -379,7 +382,8 @@ Cinnamon.prototype.searchObjects = function (xmlQuery, pageSize, page) {
         data: {
             query: xmlQuery,
             pageSize: pageSize,
-            page: page
+            page: page,
+            metaset_list:metasets
         },
         headers: {ticket: self.ticket},
         success: function (data) {
