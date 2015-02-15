@@ -147,7 +147,7 @@ CmnRegistry.prototype.remove = function (className, object) {
 };
 
 CmnRegistry.prototype.get = function (className, id, doFetch) {
-    console.log("get dictionary value for " + className + " id:" + id);
+//    console.log("get dictionary value for " + className + " id:" + id);
     var classRegistry = this.registries[className];
     if (classRegistry == undefined) {
         return null;
