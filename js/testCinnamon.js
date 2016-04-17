@@ -26,8 +26,8 @@ function runTests(cinnamon) {
     test('fetch list of ObjectTypes', function(){
         var otList = cinnamon.fetchObjectList('objectType');
         ok(findObject(otList, 'sysName', '_default_objtype') != undefined);
-        ok((/<meta\s*\/>/).test(otList[0].config));
-        ok($(otList[0].configXml).find('meta').length > 0);
+        ok((/<config\s*\/>/).test(otList[0].config));
+        ok($(otList[0].configXml).find('config').length > 0);
     });   
     
     test('fetch list of FolderTypes', function(){
