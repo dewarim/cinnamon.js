@@ -5,7 +5,7 @@
  */
 
 function Format(xml, registry){
-    addFields(this, xml, ['id', 'name', 'sysName', 'extension', 
+    addFields(this, xml, ['id', 'name', 'extension', 
         'contenttype', 'defaultObjectType'], null, null);
     if(this.defaultObjectType && this.defaultObjectType.length > 0){
         // it's defined and not an empty string
