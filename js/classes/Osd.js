@@ -21,7 +21,8 @@ function Osd(xml, registry) {
             appName: 'object > appName',
             latestHead: 'object > latestHead',
             latestBranch: 'object > latestBranch',
-            contentSize: 'object > contentsize'
+            contentSize: 'object > contentsize',
+            summary: 'object > summary' 
         },
         [
             {type: 'userAccount', path: 'object > owner > id', field: 'owner'},
