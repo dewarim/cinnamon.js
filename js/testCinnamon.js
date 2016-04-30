@@ -127,22 +127,23 @@ function runTests(cinnamon) {
         equal(folder.name, 'transient');
     });
     test('fetch osd', function(){
-        var osds = cinnamon.fetchObjectList('osd', 503);
+        // TODO: do not use hard coded ids - needs: "create osd" function, which needs "create test folder"
+        var osds = cinnamon.fetchObjectList('osd', 209);
         equal(osds.length, 1);
         var osd = osds[0];
         // TODO: create test object for this test
         //  instead of relying of finding one with id 503 in the test db.
-        equal(osd.name, 'Parent');        
-        equal(osd.getParent().id,239 );
+        equal(osd.name, 'concept');        
+        equal(osd.getParent().id,200 );
     });
     test('fetch objects in folder', function(){
-        // TODO: create test objects for this test instead of using current repo layout.
-        var folder = cinnamon.fetchFolderByPath('/templates/pages');
+        // TODO: create test objects for this test instead of relying on current repo layout.
+        var folder = cinnamon.fetchFolderByPath('/templates/dita');
         var osds = cinnamon.fetchObjects(folder);
-        equal(osds.length, 1);
+        equal(osds.length, 5);
         var osd = osds[0];        
-        equal(osd.name, 'my_projects');
-        equal(osd.getParent().id,285);
+        equal(osd.name, 'concept');
+        equal(osd.getParent().id,200);
     });     
     test('disconnect', function(){
         ok(cinnamon.disconnect());
