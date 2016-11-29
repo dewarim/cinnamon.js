@@ -42,6 +42,10 @@ export default class Repository extends React.Component {
         return this.state.client.fetchFolder(id)
     }
 
+    fetchObjectsOfFolder(id){
+        return this.state.client.fetchObjects({id:id})
+    }
+
     loadChildFolders(folder) {
 
         let childFolders = []

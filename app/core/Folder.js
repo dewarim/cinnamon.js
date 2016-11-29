@@ -1,6 +1,4 @@
 import CinnamonBaseObject from './CinnamonBaseObject'
-import React from 'react'
-
 export default class Folder {
 
     constructor(xml, registry) {
