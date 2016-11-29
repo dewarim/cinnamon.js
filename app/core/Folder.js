@@ -24,6 +24,8 @@ export default class Folder {
             this.meta = meta.clone();
         }
         console.log(this)
+        this.isRootFolder.bind(this)
+        this.getParent.bind(this)
     }
 
     getParent() {
@@ -38,6 +40,7 @@ export default class Folder {
     };
 
     isRootFolder() {
+        console.log(`this.id=${this.id} parentId=${this.parentId}`)
         return this.id == this.parentId
     };
 

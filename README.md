@@ -25,7 +25,7 @@ The project is in pre-alpha status. Currently, it can connect to a Cinnamon repo
 
 # License
 
-I have not yet decided which open source license model to use. If you want to use this software now, please contact me.
+Apache 2.0 License
 
 # Author and Contact
 
@@ -33,3 +33,4 @@ I have not yet decided which open source license model to use. If you want to us
 * Email: ingo_wiarda@dewarim.de
 * Website: https://github.com/dewarim/cinnamon.js
 
+Parts of this software were created during free project time @ [Connexity.com](http://connexity.com) (2016-11-28 to 2016-11-02)

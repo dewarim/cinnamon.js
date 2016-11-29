@@ -8,6 +8,9 @@ export default class Cinnamon {
         this.password = config.password;
         this.url = config.url;
         this.registry = new CmnRegistry(this);
+
+        this.fetchFolderByPath.bind(this);
+        this.searchFolders.bind(this)
     }
 
 
@@ -91,6 +94,10 @@ export default class Cinnamon {
         });
         if (folder) {
             console.log("found folder:" + folder.id);
+        }
+        let targetFolder = this.registry.get('folder',id,false)
+        if(targetFolder){
+            return targetFolder
         }
         return folder;
     };
@@ -419,9 +426,9 @@ export default class Cinnamon {
             headers: {ticket: self.ticket},
             success: function (data) {
                 var registry = self.registry;
-                console.log("looking for folders");
-                console.log("Found: ")
-                console.log(data)
+                // console.log("looking for folders");
+                // console.log("Found: ")
+                // console.log(data)
                 $(data).find('folders > folder').each(function (index, element) {
                     var folder = new Folder(element, registry);
                     console.log("found folder #" + folder.id + ", " + folder.name);
