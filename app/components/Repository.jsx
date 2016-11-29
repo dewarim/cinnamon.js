@@ -55,15 +55,19 @@ export default class Repository extends React.Component {
 
         return childFolders.map((child) => {
                 return <FolderComp folder={child} fetchFolder={this.fetchFolder} key={child.id} loadChildFolders={this.loadChildFolders}
-                                   isChild={true}/>
+                                   isChild={true} />
             }
         )
     }
 
 
     render() {
+        let client = this.state.client
         return (
             <div id="repository">
+                <p>
+                User {client.username} is {client.isConnected ? '' : 'not'} connected to {client.url} with ticket: {client.ticket}
+                </p>
                 <div id="folderContent">
                     <FolderComp folder={this.state.homeFolder} fetchFolder={this.fetchFolder} loadChildFolders={this.loadChildFolders}
                                 isChild={false}/>

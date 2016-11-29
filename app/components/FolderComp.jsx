@@ -17,6 +17,7 @@ import React from "react";
      * }
  *
  */
+import ChildFolder from './ChildFolder.jsx'
 export default class FolderComp extends React.Component {
 
     constructor(props) {
@@ -47,8 +48,7 @@ export default class FolderComp extends React.Component {
     }
 
     stepIntoFolder(folderId, e) {
-        console.log(folderId)
-        console.log(e)
+        e.stopPropagation()
         let folder = this.fetchFolder(folderId)
         this.setState({folder: folder,
             isChild:false
@@ -59,8 +59,8 @@ export default class FolderComp extends React.Component {
         return folders.map((folderComponent) => {
                 let folder = folderComponent.props.folder
                 return (
-                    <li onClick={this.stepIntoFolder.bind(null, folder.id)} key={folder.id}>
-                        {folderComponent}
+                    <li key={folder.id}>
+                        <ChildFolder stepInto={this.stepIntoFolder} folder={folder} key={folder.id}/>
                     </li>
                 )
             }
