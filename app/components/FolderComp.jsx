@@ -1,4 +1,22 @@
 import React from "react";
+
+/**
+ * React component to render a Cinnamon Folder which
+ * contains a name, a button for the parent folder and a clickable list of child folders.
+ *
+ * props should contain:
+ * - folder
+ * - isChild
+ * - fetchFolder-ref
+ * - loadChildFolder-ref
+ *
+ * Object's state contains:
+ * {
+     *  folder: the Cinnamon object as JavaScript class
+     *  isChild: if true, do not render list child folders
+     * }
+ *
+ */
 export default class FolderComp extends React.Component {
 
     constructor(props) {
