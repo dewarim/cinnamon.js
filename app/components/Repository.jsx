@@ -5,6 +5,7 @@ export default class Repository extends React.Component {
     constructor(props) {
         super(props)
         this.fetchFolder = this.fetchFolder.bind(this)
+        this.fetchObjectsOfFolder = this.fetchObjectsOfFolder.bind(this)
         this.loadChildFolders = this.loadChildFolders.bind(this)
 
         let client = props.client
@@ -42,6 +43,11 @@ export default class Repository extends React.Component {
         return this.state.client.fetchFolder(id)
     }
 
+    /**
+     * Fetch the objects contained in a folder
+     * @param id - id of the folder
+     * @returns {*} a list of OSDs found (or an empty list)
+     */
     fetchObjectsOfFolder(id){
         return this.state.client.fetchObjects({id:id})
     }
@@ -74,7 +80,7 @@ export default class Repository extends React.Component {
                 </p>
                 <div id="folderContent">
                     <FolderComp folder={this.state.homeFolder} fetchFolder={this.fetchFolder} loadChildFolders={this.loadChildFolders}
-                                isChild={false}/>
+                                isChild={false} fetchObjects={this.fetchObjectsOfFolder}/>
                 </div>
             </div>
         )

@@ -18,6 +18,7 @@ import React from "react";
  *
  */
 import ChildFolder from './ChildFolder.jsx'
+import OsdRowComponent from './OsdRowComponent.jsx'
 export default class FolderComp extends React.Component {
 
     constructor(props) {
@@ -30,11 +31,12 @@ export default class FolderComp extends React.Component {
         this.loadParentFolder = this.loadParentFolder.bind(this)
         this.loadChildFolders = props.loadChildFolders
         this.stepIntoFolder = this.stepIntoFolder.bind(this)
+        this.fetchObjects = props.fetchObjects
     }
 
     loadParentFolder(e) {
         let folder = this.state.folder
-        if(folder.isRootFolder()){
+        if (folder.isRootFolder()) {
             console.log("loadParentFolder: already at root level.")
             return
         }
@@ -47,11 +49,16 @@ export default class FolderComp extends React.Component {
         this.setState({folder: parent})
     }
 
+    loadFolderContent(folderId, e) {
+        return this.fetchObjects(folderId)
+    }
+
     stepIntoFolder(folderId, e) {
         e.stopPropagation()
         let folder = this.fetchFolder(folderId)
-        this.setState({folder: folder,
-            isChild:false
+        this.setState({
+            folder: folder,
+            isChild: false
         })
     }
 
@@ -67,23 +74,60 @@ export default class FolderComp extends React.Component {
         )
     }
 
+    createTableOfFolderContent(objects) {
+        let objectComponents = objects.map(osd => {
+            return <OsdRowComponent osd={osd} key={osd.id}/>
+        })
+        return (
+            <table>
+                <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Version</th>
+                    <th>Size</th>
+                    <th>Language</th>
+                    <th>Owner</th>
+                    <th>Locked by</th>
+                </tr>
+                </thead>
+                <tbody>
+                {objectComponents}
+                </tbody>
+            </table>
+        )
+    }
+
     render() {
         let folder = this.state.folder
         let childFolders = this.loadChildFolders(folder)
         let childFolderList
-        if(!this.state.isChild) {
+        if (!this.state.isChild) {
             childFolderList = <ul>{this.createClickableFolderList(childFolders)}</ul>
         }
         let parentFolderButton
-        if(! this.state.isChild && !folder.isRootFolder()){
+        if (!this.state.isChild && !folder.isRootFolder()) {
             console.log(folder.name + " is not root folder")
             parentFolderButton = <button onClick={this.loadParentFolder}>Parent Folder</button>
         }
+        let objects = this.loadFolderContent(folder.id)
+        let objectTable
+        if (objects.length > 0) {
+            console.log("found objects:")
+            console.log(objects)
+            objectTable = this.createTableOfFolderContent(objects)
+        }
+
         return (
             <div className="folder">
                 {folder.name} {parentFolderButton}
-                <br/>
+                <div className="child-folders">
                     {childFolderList}
+                </div>
+                <div className="folder-content">
+                    {objectTable}
+                </div>
             </div>
 
         )

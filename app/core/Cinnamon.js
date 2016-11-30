@@ -1,5 +1,7 @@
 import CmnRegistry from './CmnRegistry'
 import Folder from './Folder'
+import Osd from './Osd'
+
 export default class Cinnamon {
 
     constructor(config) {

@@ -15,7 +15,6 @@ export default class Osd {
                 version: 'object > version',
                 created: 'object > created',
                 modified: 'object > modified',
-                appName: 'object > appName',
                 latestHead: 'object > latestHead',
                 latestBranch: 'object > latestBranch',
                 contentSize: 'object > contentsize',
