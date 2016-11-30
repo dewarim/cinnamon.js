@@ -79,7 +79,7 @@ export default class FolderComp extends React.Component {
             return <OsdRowComponent osd={osd} key={osd.id}/>
         })
         return (
-            <table>
+            <table className="osd-table">
                 <thead>
                 <tr>
                     <th>Id</th>

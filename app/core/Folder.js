@@ -13,9 +13,9 @@ export default class Folder {
                 hasChildren: 'folder > hasChildren'
             },
             [
-                {type: 'userAccount', path: 'folder > owner > id', field: 'owner'},
-                {type: 'acl', path: 'folder > aclId', field: 'acl'},
-                {type: 'folderType', path: 'folder > typeId', field: 'type'}
+                {type: 'userAccount', path: 'folder > owner > id', field: 'owner', doFetch:true},
+                {type: 'acl', path: 'folder > aclId', field: 'acl', doFetch:true},
+                {type: 'folderType', path: 'folder > typeId', field: 'folderType', doFetch:true}
             ], registry);
         var meta = $(xml).find('folder > meta');
         if (meta.length) {

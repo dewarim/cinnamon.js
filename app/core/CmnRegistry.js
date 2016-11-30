@@ -29,12 +29,13 @@ export default class CmnRegistry {
     }
 
     setList(name, objects) {
-        console.log("add dictionary for " + name + " with " + objects.length + " items");
+        // console.log("add dictionary for " + name + " with " + objects.length + " items");
+        console.log(objects)
         this.registries[name] = new Dictionary(objects, 'id');
-        CmnRegistry.addToNameRegistry(this, name, objects);
+        this.addToNameRegistry(this, name, objects);
     };
 
-    static addToNameRegistry(registry, name, objects) {
+    addToNameRegistry(registry, name, objects) {
         var rType = registry.registryTypes[name];
         if (rType != undefined && rType.hasName) {
             console.log("add nameRegistry for " + name);
@@ -54,7 +55,7 @@ export default class CmnRegistry {
         }
     }
 
-    static removeFromNameRegistry(registry, name, objects) {
+    removeFromNameRegistry(registry, name, objects) {
         var rType = registry.registryTypes[name];
         if (rType != undefined && rType.hasName) {
             var nameField = 'sysName';
@@ -77,7 +78,7 @@ export default class CmnRegistry {
         }
         else {
             classRegistry.add(object.id, object);
-            CmnRegistry.addToNameRegistry(this, className, [object]);
+            this.addToNameRegistry(this, className, [object]);
         }
     };
 
@@ -85,14 +86,15 @@ export default class CmnRegistry {
         var classRegistry = this.registries[className];
         if (classRegistry) {
             classRegistry.add(object.id, null);
-            CmnRegistry.removeFromNameRegistry(this, className, [object]);
+            this.removeFromNameRegistry(this, className, [object]);
         }
     };
 
     get(className, id, doFetch) {
-//    console.log("get dictionary value for " + className + " id:" + id);
+        console.log("get dictionary value for " + className + " id:" + id);
         var classRegistry = this.registries[className];
         if (classRegistry == undefined) {
+            console.log(`classRegistry for ${className} is undefined`)
             return null;
         }
         var item = classRegistry.get(id);

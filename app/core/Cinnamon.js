@@ -1,6 +1,19 @@
 import CmnRegistry from './CmnRegistry'
+
+import Acl from './Acl'
 import Folder from './Folder'
+import FolderType from './FolderType'
+import Format from './Format'
 import Osd from './Osd'
+import Language from './Language'
+import LifeCycle from './LifeCycle'
+import LifeCycleState from './LifeCycleState'
+import ObjectType from './ObjectType'
+import Permission from './Permission'
+import Relation from './Relation'
+import RelationType from './RelationType'
+import UiLanguage from './UiLanguage'
+import UserAccount from './UserAccount'
 
 export default class Cinnamon {
 
@@ -12,7 +25,16 @@ export default class Cinnamon {
         this.registry = new CmnRegistry(this);
 
         this.fetchFolderByPath.bind(this);
-        this.searchFolders.bind(this)
+        this.searchFolders.bind(this);
+        this.fetchObjectList.bind(this);
+
+        // initialize registry:
+        let registry = this.registry
+        for(let entry in this.objectDict() ){
+            console.log("key: "+entry)
+            let objectList = [] // todo: for type objects like FolderType, load list at start?
+            registry.setList(entry, objectList)
+        }
     }
 
 
@@ -223,72 +245,72 @@ export default class Cinnamon {
         return folder;
     };
 
-    static objectDict() {
+    objectDict() {
         return {
             acl: {
                 controllerAction: 'acl/listXml',
                 base: 'acls',
-                constructor: Acl
+                cmn_constructor: Acl
             },
             objectType: {
                 controllerAction: 'objectType/listXml',
                 base: 'objectTypes',
-                constructor: ObjectType
+                cmn_constructor: ObjectType
             },
             folderType: {
                 controllerAction: 'folderType/listXml',
                 base: 'folderTypes',
-                constructor: FolderType
+                cmn_constructor: FolderType
             },
             metasetType: {
                 controllerAction: 'metasetType/listXml',
                 base: 'metasetTypes',
-                constructor: FolderType
+                cmn_constructor: FolderType
             },
             format: {
                 controllerAction: 'format/listXml',
                 base: 'formats',
-                constructor: Format
+                cmn_constructor: Format
             },
             permission: {
                 controllerAction: 'permission/listXml',
                 base: 'permissions',
-                constructor: Permission
+                cmn_constructor: Permission
             },
             language: {
                 controllerAction: 'language/listXml',
                 base: 'languages',
-                constructor: Language
+                cmn_constructor: Language
             },
             uiLanguage: {
                 controllerAction: 'uiLanguage/listXml',
                 base: 'languages',
                 elementName: 'language',
-                constructor: UiLanguage
+                cmn_constructor: UiLanguage
             },
             lifeCycleState: {
                 controllerAction: 'lifeCycle/listLifeCyclesXml',
                 base: 'lifecycles > lifecycle > states',
                 elementName: 'lifecycleState',
-                constructor: LifeCycleState
+                cmn_constructor: LifeCycleState
             },
             lifeCycle: {
                 controllerAction: 'lifeCycle/listLifeCyclesXml',
                 base: 'lifecycles',
                 elementName: 'lifecycle',
-                constructor: LifeCycle
+                cmn_constructor: LifeCycle
             },
             relationType: {
                 controllerAction: 'relationType/listXml',
                 base: 'relationTypes',
                 elementName: 'relationType',
-                constructor: RelationType
+                cmn_constructor: RelationType
             },
             userAccount: {
                 controllerAction: 'userAccount/listXml',
                 base: 'users',
                 elementName: 'user',
-                constructor: UserAccount
+                cmn_constructor: UserAccount
             },
             folder: {
                 getOneFunc: 'fetchFolder'
@@ -296,21 +318,21 @@ export default class Cinnamon {
             osd: {
                 base: 'objects',
                 elementName: 'object',
-                constructor: Osd,
+                cmn_constructor: Osd,
                 getOne: 'osd/fetchObject',
                 deleteControllerAction: 'osd/deleteXml'
             },
             relation: {
                 base: 'relations',
                 elementName: 'relation',
-                constructor: Relation,
+                cmn_constructor: Relation,
                 deleteControllerAction: 'relation/deleteXml'
             }
         }
     }
 
     fetchObjectList(name, id) {
-        var config = objectDict()[name];
+        var config = this.objectDict()[name];
         var self = this;
         var items = [];
         var data = {};
@@ -339,7 +361,7 @@ export default class Cinnamon {
                 var path = config.base + ' > ' + elementName;
                 console.log("path = " + path);
                 $(data).find(path).each(function (index, element) {
-                    var object = new config['constructor'](element, registry);
+                    var object = new config['cmn_constructor'](element, registry);
 //                console.log("new object: "+object.name);
                     myObjects.push(object);
                 });
@@ -349,14 +371,10 @@ export default class Cinnamon {
                 500: self.connectionError
             }
         });
-        if (id == undefined) {
-            this.registry.setList(name, items);
-        }
-        else {
-            if (items.length > 0) {
-                this.registry.add(name, items[0]);
-            }
-        }
+        items.forEach(item => {
+            this.registry.add(name, item)
+        })
+
         return items;
     };
 
@@ -855,7 +873,7 @@ export default class Cinnamon {
     deleteObj(className, id) {
         var self = this;
         var result = false;
-        var deleteControllerAction = objectDict()[className].deleteControllerAction;
+        var deleteControllerAction = this.objectDict()[className].deleteControllerAction;
         if (!deleteControllerAction) {
             console.log("Class " + className + " does not have a dedicated delete action - failed to delete object " + id);
             return;
