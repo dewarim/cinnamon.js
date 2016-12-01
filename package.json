@@ -4,7 +4,7 @@
   "description": "Web-UI for the Cinnamon CMS",
   "main": "app/index.jsx",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha --compilers js:babel-core/register test --recursive",
     "build": "webpack",
     "dev": "webpack-dev-server"
   },
@@ -24,6 +24,7 @@
   },
   "devDependencies": {
     "babel-cli": "^6.18.0",
+    "babel-core": "^6.18.2",
     "babel-loader": "^6.2.8",
     "babel-preset-es2016": "^6.16.0",
     "babel-preset-react": "^6.16.0",
