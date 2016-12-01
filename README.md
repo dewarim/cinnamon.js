@@ -50,14 +50,16 @@ I am currently revisiting the project and rewriting it while learning react.js.
 
 New version
 
-* node.js and npm
-* react.js
-* redux
-* babel
-* webpack and webpack-dev-server
-* react-router
-* mocha
-* chai
+* node.js and npm - Command line JS runtime environment and package management
+* path - utilities for working with file and directory paths
+* react.js - library by Facebook
+* redux - "predictable state container" for apps: advanced state management using functional programming techniques
+* babel - emulate new JavaScript features in old browsers transparently
+* webpack - package the whole app into a bundle.js file
+* webpack-dev-server - hot-reloading of the app in a local server 
+* react-router - URL manipulation to allow a single-page app to have multiple pages which appear in the URL
+* mocha - test runner
+* chai - BDD testing
 
 # License
 
