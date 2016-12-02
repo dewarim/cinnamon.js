@@ -4,7 +4,7 @@ export default class ChildFolder extends React.Component{
     constructor(props){
         super(props)
 
-        this.stepInto = props.stepInto
+        this.showFolder = props.showFolder
         this.state = {
             folder:props.folder
         }
@@ -13,7 +13,7 @@ export default class ChildFolder extends React.Component{
     render(){
         let folder=this.state.folder
         return (
-            <a href="#" onClick={this.stepInto.bind(null, folder.id)}>{folder.name}</a>
+            <a href="#" onClick={ () => this.showFolder(folder.id)}>{folder.name}</a>
         )
     }
 

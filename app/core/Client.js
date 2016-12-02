@@ -15,7 +15,22 @@ import RelationType from './RelationType'
 import UiLanguage from './UiLanguage'
 import UserAccount from './UserAccount'
 
-export default class Cinnamon {
+"use strict";
+
+let _client
+
+function setClient(client) {
+    _client = client;
+}
+
+function getClient(client) {
+    return _client;
+}
+
+/**
+ * Singleton class: Cinnamon Client for interacting with the server
+ */
+class Client {
 
     constructor(config) {
         this.ticket = '::unconnected::';
@@ -35,6 +50,7 @@ export default class Cinnamon {
             let objectList = [] // todo: for type objects like FolderType, load list at start?
             registry.setList(entry, objectList)
         }
+        setClient(this)
     }
 
 
@@ -58,7 +74,7 @@ export default class Cinnamon {
             async: false,
             type: 'post',
             success: function (data) {
-                self.ticket = Cinnamon.extractTicket(data);
+                self.ticket = Client.extractTicket(data);
             },
             data: {
                 command: 'connect',
@@ -222,7 +238,7 @@ export default class Cinnamon {
                     console.log("Searching for folder: " + name);
                     $(data).find('folders > folder').each(function (index, element) {
                         var myName = $(element).find('folder > name').text();
-                        console.log("Found folder with name " + myName);
+                        // console.log("Found folder with name " + myName);
                         var anyFolder;
                         if (name == myName) {
                             folder = new Folder(element, registry);
@@ -905,3 +921,5 @@ export default class Cinnamon {
     };
 
 }
+
+export {Client, getClient}

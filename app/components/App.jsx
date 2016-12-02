@@ -1,5 +1,5 @@
 import React from 'react'
-import Cinnamon from '../core/Cinnamon'
+import {Client} from '../core/Client'
 import Repository from './Repository.jsx'
 import {Router, Route, Link} from 'react-router'
 
@@ -7,22 +7,18 @@ export default class App extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {
-            client: new Cinnamon({
-                username: 'admin',
-                password: 'admin',
-                url: 'http://localhost:8080/cinnamon/'
 
-            })
-        };
+        // create a global Cinnamon client
+        let client = new Client({
+            username: 'admin',
+            password: 'admin',
+            url: 'http://localhost:8080/cinnamon/'
+        })
 
-        this.state.client.connect()
+        client.connect()
     }
 
-
     render() {
-        let client = this.state.client
-
         /*
          // TODO: later use react routing (when v4 is out, which allows more 'react-like' declarations)
          let repository = <Repository client={client}/>
@@ -35,7 +31,7 @@ export default class App extends React.Component {
 
         return (
             <div>
-                <Repository client={client}/>
+                <Repository />
             </div>
         );
     }

@@ -91,7 +91,7 @@ export default class CmnRegistry {
     };
 
     get(className, id, doFetch) {
-        console.log("get dictionary value for " + className + " id:" + id);
+        // console.log("get dictionary value for " + className + " id:" + id);
         var classRegistry = this.registries[className];
         if (classRegistry == undefined) {
             console.log(`classRegistry for ${className} is undefined`)

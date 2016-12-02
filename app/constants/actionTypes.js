@@ -1,0 +1,2 @@
+export const SHOW_FOLDER = 'SHOW_FOLDER'
+export const SHOW_PARENT_FOLDER = 'SHOW_PARENT_FOLDER'

@@ -21,7 +21,7 @@ export default class Folder {
         if (meta.length) {
             this.meta = meta.clone();
         }
-        console.log(this)
+        // console.log(this)
         this.isRootFolder.bind(this)
         this.getParent.bind(this)
     }
