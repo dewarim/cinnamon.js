@@ -91,6 +91,10 @@ export default class CmnRegistry {
     };
 
     get(className, id, doFetch) {
+        if( !id ){
+            console.log("no id given for object of type "+className);
+            return null;
+        }
         console.log("get dictionary value for " + className + " id:" + id);
         var classRegistry = this.registries[className];
         if (classRegistry == undefined) {
