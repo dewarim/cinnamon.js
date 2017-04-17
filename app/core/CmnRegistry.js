@@ -29,7 +29,6 @@ export default class CmnRegistry {
     }
 
     setList(name, objects) {
-        // console.log("add dictionary for " + name + " with " + objects.length + " items");
         console.log(objects)
         this.registries[name] = new Dictionary(objects, 'id');
         this.addToNameRegistry(this, name, objects);
@@ -48,7 +47,7 @@ export default class CmnRegistry {
                 registry.nameRegistries[name] = new Dictionary(objects, nameField);
             }
             else {
-                for (var x = 0; x < objects; x++) {
+                for (let x = 0; x < objects.length; x++) {
                     nameReg.add(objects[x][nameField], objects[x]);
                 }
             }
@@ -64,7 +63,7 @@ export default class CmnRegistry {
             }
             var nameReg = registry.nameRegistries[name];
             if (nameReg != undefined) {
-                for (var x = 0; x < objects; x++) {
+                for (var x = 0; x < objects.length; x++) {
                     nameReg.add(objects[x][nameField], undefined);
                 }
             }
@@ -72,7 +71,7 @@ export default class CmnRegistry {
     }
 
     add(className, object) {
-        var classRegistry = this.registries[className];
+        let classRegistry = this.registries[className];
         if (classRegistry == undefined) {
             this.setList(className, [object]);
         }
@@ -122,8 +121,18 @@ export default class CmnRegistry {
     };
 
     list(className) {
-        return mapToValueList(this.registries[className].values);
+        return this.mapToValueList(this.registries[className].values);
     };
+
+    mapToValueList(map) {
+        let list = [];
+        for (var field in map) {
+            if (map.hasOwnProperty(field)) {
+                list.push(map[field])
+            }
+        }
+        return list;
+    }
 
     listBy(className, property, propertyTest) {
         var items = this.list(className);

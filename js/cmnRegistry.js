@@ -104,7 +104,7 @@ function addToNameRegistry(registry, name, objects) {
             registry.nameRegistries[name] = new Dictionary(objects, nameField);
         }
         else {
-            for (var x = 0; x < objects; x++) {
+            for (var x = 0; x < objects.length; x++) {
                 nameReg.add(objects[x][nameField], objects[x]);
             }
         }
@@ -120,7 +120,7 @@ function removeFromNameRegistry(registry, name, objects) {
         }
         var nameReg = registry.nameRegistries[name];
         if (nameReg != undefined) {
-            for (var x = 0; x < objects; x++) {
+            for (var x = 0; x < objects.length; x++) {
                 nameReg.add(objects[x][nameField], undefined);
             }
         }
