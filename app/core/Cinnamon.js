@@ -70,8 +70,21 @@ export default class Cinnamon {
                 500: self.loginError
             }
         })
+        
+        if(self.ticket) {
+            // fetch user list. This will be needed anyway to display the repository content or to
+            // execute user related functions.
+            console.log("load user accounts")
+            this.fetchObjectList('userAccount')
+            console.log("current user id = "+self.getCurrentUser().id)
+        }
     };
 
+    getCurrentUser(){
+        console.log("get current user for "+this.username);
+        return this.registry.getByName("userAccount", this.username);
+    }
+    
     isConnected() {
         return this.ticket != '::unconnected::';
     };
@@ -347,7 +360,7 @@ export default class Cinnamon {
                 return [self[config.getOneFunc](id)];
             }
             else {
-                console.log("Neither getOne or getOneFunc is defined for " + name);
+                // console.log("Neither getOne or getOneFunc is defined for " + name);
             }
         }
         $.ajax(this.url + controllerAction, {
