@@ -1,5 +1,7 @@
 import React from 'react'
 import FolderComp from './FolderComp.jsx'
+import NavigationComp from './NavigationComponent.jsx'
+
 export default class Repository extends React.Component {
 
     constructor(props) {
@@ -73,11 +75,16 @@ export default class Repository extends React.Component {
 
     render() {
         let client = this.state.client
+        let currentUser = client.getCurrentUser()
+        console.log(currentUser)
         return (
             <div id="repository">
                 <p>
                 User {client.username} is {client.isConnected ? '' : 'not'} connected to {client.url} with ticket: {client.ticket}
                 </p>
+                <div id="navigation">
+                    <NavigationComp user={currentUser}/>
+                </div>
                 <div id="folderContent">
                     <FolderComp folder={this.state.homeFolder} fetchFolder={this.fetchFolder} loadChildFolders={this.loadChildFolders}
                                 isChild={false} fetchObjects={this.fetchObjectsOfFolder}/>
