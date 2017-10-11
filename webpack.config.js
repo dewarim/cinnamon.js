@@ -6,7 +6,7 @@ var APP_DIR = path.resolve(__dirname + '/app')
 var webpack = require('webpack')
 
 var config = {
-    entry: APP_DIR + '/index.jsx',
+    entry: APP_DIR + '/index.js',
     output: {
         path: BUILD_DIR,
         filename: "bundle.js"
@@ -27,10 +27,7 @@ var config = {
         ]
     },
     plugins: [
-        new webpack.ProvidePlugin({
-            $: "jquery",
-            jQuery: "jquery"
-        })
+   
     ]
 
 };

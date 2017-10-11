@@ -72,7 +72,10 @@ export default class Repository extends React.Component {
         )
     }
 
-
+    updateMainView(e){
+        
+    }
+    
     render() {
         let client = this.state.client
         let currentUser = client.getCurrentUser()
@@ -83,8 +86,9 @@ export default class Repository extends React.Component {
                 User {client.username} is {client.isConnected ? '' : 'not'} connected to {client.url} with ticket: {client.ticket}
                 </p>
                 <div id="navigation">
-                    <NavigationComp user={currentUser}/>
+                    <NavigationComp user={currentUser} client={client} updateMainView={this.updateMainView}/>
                 </div>
+                
                 <div id="folderContent">
                     <FolderComp folder={this.state.homeFolder} fetchFolder={this.fetchFolder} loadChildFolders={this.loadChildFolders}
                                 isChild={false} fetchObjects={this.fetchObjectsOfFolder}/>
